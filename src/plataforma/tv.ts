@@ -47,6 +47,9 @@ export function ehAppDaTv(): boolean {
   const w = janela();
   if (!w) return false;
   if (w.__SAIMO_TV__ === 'tizen' || w.__SAIMO_TV__ === 'webos') return true;
+  if (typeof location !== 'undefined' && location.origin && (location.origin.startsWith('http://') || location.origin.startsWith('https://'))) {
+    return false;
+  }
   const ua = navigator.userAgent;
   return /Tizen/i.test(ua) || !!w.tizen || /Web0S|webOS/i.test(ua) || !!w.webOS;
 }

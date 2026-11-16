@@ -37,7 +37,7 @@ const APPS: App[] = [
   {
     id: 'ios',
     aba: 'iPhone',
-    titulo: 'Saimo para iPhone e iPad',
+    titulo: 'CinePlay para iPhone e iPad',
     subtitulo: 'Em breve na App Store',
     arquivo: '',
     atalho: '/app',
@@ -49,9 +49,9 @@ const APPS: App[] = [
   {
     id: 'tvbox',
     aba: 'TV Box',
-    titulo: 'Saimo TV para TV Box',
+    titulo: 'CinePlay TV para TV Box',
     subtitulo: 'Android TV, Fire TV Stick, Mi Box, Chromecast com Google TV e TV Box Android',
-    arquivo: 'SaimoTV.apk',
+    arquivo: 'CinePlayTV.apk',
     atalho: '/tvbox',
     botao: 'Baixar para TV Box',
     requisitos: ['Android 5.0 ou mais novo', 'Controle remoto com setas e OK', 'Conexão com a internet'],
@@ -59,15 +59,15 @@ const APPS: App[] = [
       { titulo: 'Instale o Downloader', texto: 'Na loja do aparelho (Play Store ou Amazon Appstore), procure por “Downloader” e instale.' },
       { titulo: 'Digite o código ou o endereço', texto: `Abra o Downloader e digite o código ${CODIGO_DOWNLOADER} (ou o endereço curto mostrado acima). O download começa sozinho.` },
       { titulo: 'Permita a instalação', texto: 'Se o aparelho pedir, ative “Instalar apps desconhecidos” para o Downloader.' },
-      { titulo: 'Pronto', texto: 'Instale e abra o Saimo TV. As próximas versões são oferecidas dentro do próprio app.' },
+      { titulo: 'Pronto', texto: 'Instale e abra o CinePlay. As próximas versões são oferecidas dentro do próprio app.' },
     ],
   },
   {
     id: 'cell',
     aba: 'Celular',
-    titulo: 'Saimo TV para celular',
+    titulo: 'CinePlay para celular',
     subtitulo: 'Celulares e tablets Android',
-    arquivo: 'SaimoCell.apk',
+    arquivo: 'CinePlayCell.apk',
     atalho: '/celular',
     botao: 'Baixar para celular',
     requisitos: ['Android 7.0 ou mais novo', 'Cerca de 90 MB livres', 'Conexão com a internet'],
@@ -75,69 +75,69 @@ const APPS: App[] = [
       { titulo: 'Baixe o APK', texto: 'Toque no botão acima. O navegador pode avisar que o arquivo é um app: confirme o download.' },
       { titulo: 'Abra o arquivo', texto: 'Toque na notificação de download concluído, ou abra o arquivo pela pasta Downloads.' },
       { titulo: 'Permita a instalação', texto: 'Se o Android pedir, ative “Permitir desta fonte” para o navegador e volte.' },
-      { titulo: 'Pronto', texto: 'Instale e abra o Saimo TV. As próximas versões são oferecidas dentro do próprio app.' },
+      { titulo: 'Pronto', texto: 'Instale e abra o CinePlay. As próximas versões são oferecidas dentro do próprio app.' },
     ],
   },
   {
     id: 'roku',
     aba: 'Roku',
-    titulo: 'Saimo TV para Roku',
+    titulo: 'CinePlay para Roku',
     subtitulo: 'TVs Roku (TCL, AOC, Philips, Philco, Semp…) e aparelhos Roku Express / Premiere / Streaming Stick',
-    arquivo: 'SaimoTV-Roku.zip',
+    arquivo: 'CinePlay-Roku.zip',
     atalho: '/roku',
     botao: 'Baixar para Roku',
     requisitos: ['TV Roku ou dispositivo Roku (Express, Premiere, Stick)', 'Modo desenvolvedor ativo na TV Roku', 'Computador ou celular na mesma rede Wi-Fi'],
     passos: [
       { titulo: 'Ative o modo desenvolvedor na TV', texto: 'No controle da TV, aperte a sequência: Home 3x › Cima 2x › Direita 1x › Esquerda 1x › Direita 1x › Esquerda 1x › Direita 1x. Ative o Developer Mode, defina uma senha e anote o IP exibido na tela.' },
-      { titulo: 'Baixe o pacote do canal', texto: 'Clique no botão acima para baixar o arquivo SaimoTV-Roku.zip no computador ou celular.' },
+      { titulo: 'Baixe o pacote do canal', texto: 'Clique no botão acima para baixar o arquivo CinePlay-Roku.zip no computador ou celular.' },
       { titulo: 'Acesse o instalador da TV', texto: 'No navegador do computador ou celular na mesma rede Wi-Fi, acesse http://IP-DA-TV (ex: http://192.168.1.50). Digite o usuário rokudev e a senha que você definiu.' },
-      { titulo: 'Envie e instale', texto: 'Na página do Roku, clique em “Upload”, selecione o SaimoTV-Roku.zip e clique em “Install”. O Saimo TV abrirá instantaneamente na sua TV!' },
+      { titulo: 'Envie e instale', texto: 'Na página do Roku, clique em “Upload”, selecione o CinePlay-Roku.zip e clique em “Install”. O CinePlay abrirá instantaneamente na sua TV!' },
     ],
   },
   {
     id: 'windows',
     aba: 'Windows',
-    titulo: 'Saimo TV para Windows',
+    titulo: 'CinePlay para Windows',
     subtitulo: 'PC e notebook com Windows 10 ou 11 (64 bits)',
-    arquivo: 'SaimoTV-Windows.zip',
+    arquivo: 'CinePlay-Windows.zip',
     atalho: '/windows',
     botao: 'Baixar para Windows',
     requisitos: ['Windows 10 ou 11, 64 bits', 'Cerca de 150 MB livres', 'Conexão com a internet'],
     passos: [
       { titulo: 'Baixe o arquivo', texto: 'Clique no botão acima. O navegador pode avisar que o arquivo é pouco baixado: mande manter.' },
-      { titulo: 'Extraia o arquivo', texto: 'Clique com o botão direito no “SaimoTV-Windows.zip” baixado e escolha "Extrair Tudo..." para descompactar a pasta.' },
-      { titulo: 'Rode o aplicativo', texto: 'Abra a pasta extraída e dê um duplo clique em “Saimo TV.exe”. Mantenha os arquivos .dll na mesma pasta do executável.' },
+      { titulo: 'Extraia o arquivo', texto: 'Clique com o botão direito no “CinePlay-Windows.zip” baixado e escolha "Extrair Tudo..." para descompactar a pasta.' },
+      { titulo: 'Rode o aplicativo', texto: 'Abra a pasta extraída e dê um duplo clique em “CinePlay.exe”. Mantenha os arquivos .dll na mesma pasta do executável.' },
       { titulo: 'Se o Windows avisar', texto: 'Na tela do Windows Defender, clique em “Mais informações” e depois em “Executar assim mesmo”. Se pedir DLL, clique com o botão direito na DLL > Propriedades > marque "Desbloquear".' },
     ],
   },
   {
     id: 'linux',
     aba: 'Linux',
-    titulo: 'Saimo TV para Linux',
+    titulo: 'CinePlay para Linux',
     subtitulo: 'PC e notebook com Linux: o mesmo app do Windows, com a mesma tela',
-    arquivo: 'SaimoTV-Linux-x86_64.AppImage',
+    arquivo: 'CinePlay-Linux-x86_64.AppImage',
     atalho: '/linux',
     botao: 'Baixar para Linux',
     requisitos: ['Distribuição de 2022 para cá (Ubuntu 22.04, Debian 12, Fedora 36, Mint 21 ou mais novo)', 'PC comum (x86_64) ou ARM (aarch64)', 'Cerca de 200 MB livres', 'Conexão com a internet'],
     passos: [
       { titulo: 'Baixe o AppImage', texto: 'Clique no botão acima. Ele roda em qualquer distribuição e já traz o reprodutor de vídeo junto.' },
-      { titulo: 'Permita executar', texto: 'Clique com o botão direito no arquivo › Propriedades › marque “Permitir executar como programa”. No terminal: chmod +x SaimoTV-Linux-x86_64.AppImage' },
-      { titulo: 'Abra o Saimo TV', texto: 'Dê um duplo clique no arquivo. O app avisa quando sair versão nova e abre o download no navegador.' },
-      { titulo: 'Prefere instalar?', texto: 'No Ubuntu, Debian, Mint e Pop!_OS, baixe o .deb (link abaixo do botão) e abra com a Central de Programas, ou: sudo apt install ./SaimoTV-Linux-amd64.deb' },
+      { titulo: 'Permita executar', texto: 'Clique com o botão direito no arquivo › Propriedades › marque “Permitir executar como programa”. No terminal: chmod +x CinePlay-Linux-x86_64.AppImage' },
+      { titulo: 'Abra o CinePlay', texto: 'Dê um duplo clique no arquivo. O app avisa quando sair versão nova e abre o download no navegador.' },
+      { titulo: 'Prefere instalar?', texto: 'No Ubuntu, Debian, Mint e Pop!_OS, baixe o .deb (link abaixo do botão) e abra com a Central de Programas, ou: sudo apt install ./CinePlay-Linux-amd64.deb' },
     ],
   },
   {
     id: 'mac',
     aba: 'Mac',
-    titulo: 'Saimo TV para Mac',
+    titulo: 'CinePlay para Mac',
     subtitulo: 'Macs com chip Apple (M1, M2, M3, M4…)',
-    arquivo: 'SaimoTV.dmg',
+    arquivo: 'CinePlay.dmg',
     atalho: '/mac',
     botao: 'Baixar para Mac',
     requisitos: ['macOS 15 Sequoia ou mais novo', 'Mac com chip Apple (não roda em Mac Intel)', 'Conexão com a internet'],
     passos: [
       { titulo: 'Baixe o DMG', texto: 'Clique no botão acima. O arquivo vai para a pasta Downloads.' },
-      { titulo: 'Arraste para Aplicativos', texto: 'Abra o SaimoTV.dmg e arraste o Saimo TV para a pasta Aplicativos, substituindo o antigo se houver.' },
+      { titulo: 'Arraste para Aplicativos', texto: 'Abra o CinePlay.dmg e arraste o CinePlay para a pasta Aplicativos, substituindo o antigo se houver.' },
       { titulo: 'Libere na primeira abertura', texto: 'Se o macOS disser que não pode verificar o app, vá em Ajustes do Sistema › Privacidade e Segurança e clique em “Abrir Mesmo Assim”.' },
       { titulo: 'Pronto', texto: 'O app avisa quando sair versão nova e abre o download no navegador.' },
     ],
@@ -145,33 +145,33 @@ const APPS: App[] = [
   {
     id: 'samsung',
     aba: 'Samsung',
-    titulo: 'Saimo TV para TV Samsung',
+    titulo: 'CinePlay para TV Samsung',
     subtitulo: 'Smart TVs Samsung (Tizen) de 2020 em diante',
-    arquivo: 'SaimoTV-Samsung.wgt',
+    arquivo: 'CinePlay-Samsung.wgt',
     atalho: '/samsung',
     botao: 'Baixar para Samsung',
     requisitos: ['TV Samsung de 2020 ou mais nova', 'Modo desenvolvedor ligado na TV', 'Um computador na mesma rede para instalar'],
     passos: [
       { titulo: 'Ligue o modo desenvolvedor', texto: 'Na TV, abra Apps, digite 12345 no controle, ligue “Developer mode” e informe o IP do seu computador. Reinicie a TV.' },
-      { titulo: 'Baixe o arquivo', texto: 'Baixe o SaimoTV-Samsung.wgt no computador pelo botão acima.' },
-      { titulo: 'Assine e instale', texto: 'No Tizen Studio (ou em um instalador de .wgt), gere o certificado Samsung com o ID da sua TV, assine o pacote e instale pelo sdb: sdb connect IP-DA-TV e tizen install -n SaimoTV-Samsung.wgt -t NOME-DA-TV.' },
-      { titulo: 'Pronto', texto: 'Abra o Saimo TV em Apps. O conteúdo do app atualiza sozinho: só é preciso reinstalar quando o aviso pedir.' },
+      { titulo: 'Baixe o arquivo', texto: 'Baixe o CinePlay-Samsung.wgt no computador pelo botão acima.' },
+      { titulo: 'Assine e instale', texto: 'No Tizen Studio (ou em um instalador de .wgt), gere o certificado Samsung com o ID da sua TV, assine o pacote e instale pelo sdb: sdb connect IP-DA-TV e tizen install -n CinePlay-Samsung.wgt -t NOME-DA-TV.' },
+      { titulo: 'Pronto', texto: 'Abra o CinePlay em Apps. O conteúdo do app atualiza sozinho: só é preciso reinstalar quando o aviso pedir.' },
     ],
   },
   {
     id: 'lg',
     aba: 'LG',
-    titulo: 'Saimo TV para TV LG',
+    titulo: 'CinePlay para TV LG',
     subtitulo: 'Smart TVs LG (webOS) de 2020 em diante',
-    arquivo: 'SaimoTV-LG.ipk',
+    arquivo: 'CinePlay-LG.ipk',
     atalho: '/lg',
     botao: 'Baixar para LG',
     requisitos: ['TV LG de 2020 ou mais nova', 'Conta LG e o app “Developer Mode” da TV', 'Um computador na mesma rede para instalar'],
     passos: [
       { titulo: 'Ligue o modo desenvolvedor', texto: 'Na TV, instale o app “Developer Mode” pela LG Content Store, entre com a conta LG e ligue “Dev Mode Status” e “Key Server”.' },
-      { titulo: 'Baixe o arquivo', texto: 'Baixe o SaimoTV-LG.ipk no computador pelo botão acima.' },
-      { titulo: 'Instale', texto: 'Com o ares-cli: ares-setup-device (cadastre a TV), ares-novacom --device TV --getkey e ares-install --device TV SaimoTV-LG.ipk.' },
-      { titulo: 'Renove de tempos em tempos', texto: 'O modo desenvolvedor da LG expira em cerca de 50 horas. Abra o app “Developer Mode” e toque em “Extend” para manter o Saimo TV instalado.' },
+      { titulo: 'Baixe o arquivo', texto: 'Baixe o CinePlay-LG.ipk no computador pelo botão acima.' },
+      { titulo: 'Instale', texto: 'Com o ares-cli: ares-setup-device (cadastre a TV), ares-novacom --device TV --getkey e ares-install --device TV CinePlay-LG.ipk.' },
+      { titulo: 'Renove de tempos em tempos', texto: 'O modo desenvolvedor da LG expira em cerca de 50 horas. Abra o app “Developer Mode” e toque em “Extend” para manter o CinePlay instalado.' },
     ],
   },
 ];
@@ -213,7 +213,7 @@ function detectar(): Deteccao {
   }
   if (/Roku/i.test(ua)) {
     return { recomendado: 'roku', aparelho,
-      aviso: 'Para instalar o canal Saimo TV no Roku é preciso um computador ou celular na mesma rede para ativar o modo desenvolvedor (passos abaixo).' };
+      aviso: 'Para instalar o canal CinePlay no Roku é preciso um computador ou celular na mesma rede para ativar o modo desenvolvedor (passos abaixo).' };
   }
   if (deviceType === 'tv') return { recomendado: 'tvbox', aparelho, aviso: null };
   // Navegador de TV Box Android costuma se anunciar como tablet ("Android 9; X96",
@@ -336,7 +336,7 @@ export function AppDownload() {
 
       <main className="download-main">
         <section className="download-hero">
-          <h1>Baixe o Saimo<span>TV</span></h1>
+          <h1>Baixe o Cine<span>Play</span></h1>
           <p>Grátis e sem cadastro. Escolha onde vai assistir.</p>
           <p className="download-detected">Você está em: <strong>{deteccao.aparelho}</strong></p>
           {deteccao.aviso && <p className="download-aviso">{deteccao.aviso}</p>}
@@ -372,8 +372,8 @@ export function AppDownload() {
           {app.emBreve ? (
             <div className="download-embreve" role="status">
               <span className="download-embreve-selo"><i aria-hidden="true" /> Em breve</span>
-              <p>O Saimo para iPhone e iPad está a caminho da App Store. Quando sair, o botão de download aparece aqui.</p>
-              <p className="download-embreve-dica">Enquanto isso, o Saimo funciona direto no navegador: no Safari, toque em Compartilhar › Adicionar à Tela de Início.</p>
+              <p>O CinePlay para iPhone e iPad está a caminho da App Store. Quando sair, o botão de download aparece aqui.</p>
+              <p className="download-embreve-dica">Enquanto isso, o CinePlay funciona direto no navegador: no Safari, toque em Compartilhar › Adicionar à Tela de Início.</p>
             </div>
           ) : arquivo ? (
             <a

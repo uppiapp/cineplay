@@ -370,7 +370,7 @@ export function DoacaoModal() {
 
             <div className="saimo-doacao-historia">
               <p>
-                O <strong>Saimo TV</strong> nasceu com um propósito claro: oferecer canais ao vivo, filmes e séries com rapidez e qualidade, <strong>sem propagandas invasivas e sem cobrar assinaturas</strong>.
+                O <strong>CinePlay</strong> nasceu com um propósito claro: oferecer canais ao vivo, filmes e séries com rapidez e qualidade, <strong>sem propagandas invasivas e sem cobrar assinaturas</strong>.
               </p>
               <p>
                 Manter servidores velozes, infraestrutura de transmissão e atualizações diárias gera custos reais todos os meses.

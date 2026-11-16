@@ -12,7 +12,7 @@
  * isso que vale manter esta cópia de pé mesmo com o site hospedado na
  * Cloudflare, com `VITE_PROXY_BASE` apontando para cá.
  */
-import type { IncomingMessage, ServerResponse } from 'node:http';
+import type { IncomingMessage, ServerResponse } from 'http';
 import { onRequest } from '../functions/api/proxy';
 
 export const config = {

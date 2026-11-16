@@ -34,21 +34,19 @@ const ITENS: Item[] = [
     icone: <svg {...ICONE}><rect x="2" y="7" width="20" height="14" rx="2" /><path d="m17 2-5 5-5-5" /></svg>,
   },
   {
-    // No celular o menu do topo (onde ficam os Eventos no computador) some;
-    // sem isto não havia como abrir a agenda.
     caminho: '#eventos',
-    rotulo: 'Eventos',
-    icone: <svg {...ICONE}><rect x="3" y="4" width="18" height="18" rx="2" /><circle cx="12" cy="13" r="5" /><path d="M12 8v5" /></svg>,
+    rotulo: 'Jogos/Goal',
+    icone: <svg {...ICONE}><circle cx="12" cy="12" r="9" /><path d="m12 7 4 3-1.5 5h-5L8 10z" /></svg>,
   },
   {
     caminho: '/movies',
-    rotulo: 'Filmes e séries',
+    rotulo: 'Filmes',
     icone: <svg {...ICONE}><rect x="2" y="3" width="20" height="18" rx="2" /><path d="M7 3v18M17 3v18M2 8h5M2 16h5M17 8h5M17 16h5" /></svg>,
   },
   {
-    caminho: '/app',
-    rotulo: 'Baixar app',
-    icone: <svg {...ICONE}><path d="M12 3v12M7 10l5 5 5-5M5 21h14" /></svg>,
+    caminho: '/plan',
+    rotulo: 'Loja/Planos',
+    icone: <svg {...ICONE}><circle cx="12" cy="12" r="10" /><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" /><path d="M12 6v2m0 8v2" /></svg>,
   },
 ];
 

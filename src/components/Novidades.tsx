@@ -124,7 +124,7 @@ export function Novidades() {
   const { filmes } = useListas();
 
   useEffect(() => {
-    document.title = 'Novidades · Saimo TV';
+    document.title = 'Novidades · CinePlay';
     const robo = document.createElement('meta');
     robo.name = 'robots';
     robo.content = 'noindex';

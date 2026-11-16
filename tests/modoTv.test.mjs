@@ -13,13 +13,14 @@ import { buildSync } from 'esbuild';
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 const saida = join(mkdtempSync(join(tmpdir(), 'modotv-')), 'tv.mjs');
 buildSync({
   stdin: { contents: "export * from './src/utils/streamUrl.ts'; export * from './src/plataforma/tv.ts';", resolveDir: process.cwd(), loader: 'ts' },
   bundle: true, format: 'esm', platform: 'node', outfile: saida, logLevel: 'error',
   define: { 'import.meta.env.VITE_PROXY_BASE': 'undefined' },
 });
-const { buildAttempts, needsProxy, proxyBase, playableUrl, marcaTv, ehTv } = await import(saida);
+const { buildAttempts, needsProxy, proxyBase, playableUrl, marcaTv, ehTv } = await import(pathToFileURL(saida).href);
 
 const http = { url: 'http://cdn.exemplo.com/canal/index.m3u8' };
 const https = { url: 'https://cdn.exemplo.com/canal/index.m3u8' };
@@ -84,7 +85,7 @@ test('site aberto no navegador da TV (sem o pacote) segue as regras de página h
 test('proxy do site cortado pela cota do dia: usa o de reserva; de pé: usa o próprio', async () => {
   delete globalThis.__SAIMO_TV__;
   globalThis.location = { origin: 'https://saimo-tv.pages.dev' };
-  const { sondarProxy: sondar, proxyBase: base } = await import(saida);
+  const { sondarProxy: sondar, proxyBase: base } = await import(pathToFileURL(saida).href);
   globalThis.fetch = async () => ({ headers: { get: () => 'text/html; charset=utf-8' } });
   await sondar();
   assert.equal(base(), 'https://saimo-tv2.pages.dev');

@@ -6,15 +6,15 @@
  * política de privacidade com contato.
  */
 export const SITE = {
-  nome: 'Saimo',
-  nomeCompleto: 'Saimo TV',
+  nome: 'CinePlay',
+  nomeCompleto: 'CinePlay TV',
   /** Pessoa ou empresa responsável pelo aplicativo (aparece nos Termos e na Privacidade). */
-  responsavel: 'Saimo',
+  responsavel: 'CinePlay',
   /** E-mail de suporte e privacidade. Vazio = a página manda usar o canal de suporte do app. */
-  email: 'saimo.tv.gs@gmail.com',
-  endereco: 'https://saimo-tv.pages.dev',
+  email: 'suporte@cineplay.tv',
+  endereco: 'https://cineplay.vercel.app',
   /** Última revisão dos textos legais. */
-  atualizadoEm: '10 de novembro de 2026',
+  atualizadoEm: '13 de novembro de 2026',
   versaoDoTexto: '1.0',
 } as const;
 

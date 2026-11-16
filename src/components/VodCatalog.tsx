@@ -33,6 +33,7 @@ import {
   tituloDoId,
   colecao,
   destaques,
+  chaveDeDeduplicacao,
   episodios,
   generos as lerGeneros,
   temGenero,
@@ -72,7 +73,7 @@ import {
 import { carregarDetalhes, detalheDe, faixasDeAno, type Detalhes } from '../services/infoDosTitulos';
 import './VodCatalog.css';
 
-export type Secao = 'filmes' | 'series' | 'animes' | 'doramas' | 'extra';
+export type Secao = 'filmes' | 'series' | 'netflix' | '2026' | 'animes' | 'doramas' | 'extra';
 
 interface VodCatalogProps {
   onSelectMovie: (movie: Movie, seriesInfo?: SeriesEpisodeInfo | null) => void;
@@ -107,20 +108,38 @@ interface Trabalho {
   papel: string;
 }
 
-const PAGINA = 120;
+const PAGINA = 240;
 
 const GENEROS_ON_DEMAND = [
   'Ação',
   'Comédia',
   'Terror',
   'Ficção científica',
+  'Aventura',
   'Romance',
   'Suspense',
   'Animação',
-  'Aventura',
   'Drama',
   'Crime',
   'Fantasia',
+  'Família',
+  'Mistério',
+  'Documentário',
+  'Guerra',
+  'Faroeste',
+  'História',
+];
+
+const NETFLIX_KEYWORDS = [
+  'stranger things', 'wandinha', 'round 6', 'bridgerton', 'la casa de papel',
+  'the witcher', 'black mirror', 'dark', 'cobra kai', 'lupin', 'berlim',
+  'one piece', 'peaky blinders', 'sex education', 'outer banks', 'emily em paris',
+  'o gambito da rainha', 'elite', 'ozark', 'heartstopper', 'sweet tooth',
+  'sandman', 'narcos', 'lucifer', 'manifest', 'the crown', 'arcane',
+  'alerta vermelho', 'resgate', 'a sociedade da neve', 'o irlandês', 'o irlandes',
+  'bird box', 'glass onion', 'enola holmes', 'rebel moon', 'não olhe para cima', 'nao olhe para cima',
+  'dahmer', 'bebe rena', 'treta', 'agente oculto', 'mindhunter', 'you', 'sense8',
+  'vikings: valhalla', 'beef', 'monstros', 'sex/life', 'pinóquio de guillermo del toro',
 ];
 
 const ORDEM_GENEROS = [
@@ -148,6 +167,8 @@ const ORDEM_GENEROS = [
 const SOBRE_SECAO: Record<Secao, string> = {
   filmes: 'Lançamentos, clássicos e tudo entre eles, dublados e legendados.',
   series: 'Temporadas completas, com o próximo episódio emendando sozinho.',
+  netflix: 'Originais e grandes produções consagradas da Netflix.',
+  '2026': 'Os lançamentos e estreias mais aguardados de 2026.',
   animes: 'Os animes do momento e os que marcaram época.',
   doramas: 'Romance, drama e suspense da Coreia, do Japão e da China.',
   extra: 'Catálogo adulto reservado e protegido por senha.',
@@ -174,7 +195,21 @@ function agruparEpisodios(lista: Episodio[]): EpisodioAgrupado[] {
     }
   }
   return [...mapa.values()]
-    .map((episodio) => ({ ...episodio, fontes: httpsFirst(episodio.fontes) }))
+    .map((episodio) => {
+      // Prioriza Dublado (Português) em cada episódio por padrão
+      const fontesOrdenadas = [...episodio.fontes].sort((a, b) => {
+        const aDub = a.versao === 'dub' || !a.versao;
+        const bDub = b.versao === 'dub' || !b.versao;
+        if (aDub && !bDub) return -1;
+        if (!aDub && bDub) return 1;
+        return 0;
+      });
+      return {
+        ...episodio,
+        versoes: [...episodio.versoes].sort((a, b) => (a === 'dub' ? -1 : b === 'dub' ? 1 : 0)),
+        fontes: httpsFirst(fontesOrdenadas),
+      };
+    })
     .sort((a, b) => a.temporada - b.temporada || a.numero - b.numero);
 }
 
@@ -311,7 +346,12 @@ export function VodCatalog({
             ano: '',
             nomeCompleto: item.titulo,
           }));
-        const fontes: MovieSource[] = Object.entries(dados?.fontes ?? {}).flatMap(([versao, urls]) =>
+        const entradas = Object.entries(dados?.fontes ?? {}).sort(([a], [b]) => {
+          if (a === 'dub' && b !== 'dub') return -1;
+          if (b === 'dub' && a !== 'dub') return 1;
+          return a.localeCompare(b);
+        });
+        const fontes: MovieSource[] = entradas.flatMap(([versao, urls]) =>
           urls.map((url) => ({ url, versao })),
         );
         if (tentativa !== aberturaRef.current) return;
@@ -446,11 +486,15 @@ export function VodCatalog({
     const totalAnimes = animesColecao.length || 1050;
     const totalDoramas = doramasColecao.length || 580;
     const totalExtras = gavetas.reduce((acc, g) => acc + (g.reservados || 0), 0);
+    const totalNetflix = 76;
+    const total2026 = 450;
     const totalGeral = totalFilmes + totalSeries + totalAnimes + totalDoramas;
     return {
       totalGeral,
       filmes: totalFilmes,
       series: totalSeries,
+      netflix: totalNetflix,
+      '2026': total2026,
       animes: totalAnimes,
       doramas: totalDoramas,
       extra: totalExtras,
@@ -478,6 +522,8 @@ export function VodCatalog({
     return {
       filmes: pegarCapas('f'),
       series: pegarCapas('s'),
+      netflix: pegarCapas('s'),
+      '2026': pegarCapas('f'),
       animes: pegarCapas('a'),
       doramas: pegarCapas('d'),
       extra: [],
@@ -489,13 +535,29 @@ export function VodCatalog({
     if (!generos) return [];
 
     const ehSerie = secao === 'series';
-    const listaBase = ehSerie ? todasSeries : todosFilmes;
+    let listaBase = ehSerie ? todasSeries : todosFilmes;
+    if (secao === '2026') {
+      listaBase = [...todosFilmes, ...todasSeries].filter((a) => a.ano === '2026' || a.titulo.includes('2026'));
+    } else if (secao === 'netflix') {
+      listaBase = [...todasSeries, ...todosFilmes].filter((a) => {
+        const tLow = a.titulo.toLowerCase();
+        return NETFLIX_KEYWORDS.some((kw) => tLow === kw || tLow.startsWith(kw + ' (') || tLow.startsWith(kw + ':') || tLow.includes(kw));
+      });
+    }
 
     const generosAlvo = (secao === null)
       ? GENEROS_ON_DEMAND
       : ORDEM_GENEROS.filter((g) => generos.todos.includes(g));
 
     const out: { titulo: string; genero: string; itens: ItemDestaque[] }[] = [];
+
+    // 1. Coleta tudo que já foi exibido nas fileiras de destaque para NUNCA repetir nada em nenhuma fileira de gênero
+    const jaExibidos = new Set<string>();
+    for (const fila of filasDestaque) {
+      for (const it of fila.itens) {
+        jaExibidos.add(`${it.tipo}|${chaveDeDeduplicacao(it.titulo)}`);
+      }
+    }
 
     if (secao === 'animes') {
       // Fileira dedicada aos animes populares e novidades
@@ -512,7 +574,9 @@ export function VodCatalog({
         const achado = animesColecao.find((s) => s.titulo.toLowerCase().includes(pop));
         if (achado) {
           const c = capaDaFicha(generos, achado.titulo, true, achado.tmdbId) || '';
-          if (c && !popularesItens.some((i) => i.titulo === achado.titulo)) {
+          const chaveA = `a|${chaveDeDeduplicacao(achado.titulo)}`;
+          if (c && !jaExibidos.has(chaveA)) {
+            jaExibidos.add(chaveA);
             popularesItens.push({
               tipo: 'a',
               titulo: achado.titulo,
@@ -532,17 +596,25 @@ export function VodCatalog({
       }
 
       for (const g of generosAlvo) {
-        const doGenero = animesColecao
-          .filter((s) => temGenero(generos, s.titulo, true, g, s.tmdbId))
-          .map((s) => ({
-            tipo: 'a',
-            titulo: s.titulo,
-            letra: '#',
-            ano: s.ano,
-            capa: capaDaFicha(generos, s.titulo, true, s.tmdbId) || '',
-          }))
-          .filter((s) => !!s.capa)
-          .slice(0, 25);
+        const doGenero: ItemDestaque[] = [];
+        for (const s of animesColecao) {
+          const chaveA = `a|${chaveDeDeduplicacao(s.titulo)}`;
+          if (jaExibidos.has(chaveA)) continue;
+          if (temGenero(generos, s.titulo, true, g, s.tmdbId)) {
+            const capa = capaDaFicha(generos, s.titulo, true, s.tmdbId) || '';
+            if (capa) {
+              jaExibidos.add(chaveA);
+              doGenero.push({
+                tipo: 'a',
+                titulo: s.titulo,
+                letra: '#',
+                ano: s.ano,
+                capa,
+              });
+              if (doGenero.length >= 35) break;
+            }
+          }
+        }
         if (doGenero.length >= 3) {
           out.push({
             titulo: g,
@@ -556,17 +628,25 @@ export function VodCatalog({
 
     if (secao === 'doramas') {
       for (const g of generosAlvo) {
-        const doGenero = doramasColecao
-          .filter((s) => temGenero(generos, s.titulo, true, g))
-          .map((s) => ({
-            tipo: 'd',
-            titulo: s.titulo,
-            letra: '#',
-            ano: s.ano,
-            capa: capaDaFicha(generos, s.titulo, true) || '',
-          }))
-          .filter((s) => !!s.capa)
-          .slice(0, 25);
+        const doGenero: ItemDestaque[] = [];
+        for (const s of doramasColecao) {
+          const chaveD = `d|${chaveDeDeduplicacao(s.titulo)}`;
+          if (jaExibidos.has(chaveD)) continue;
+          if (temGenero(generos, s.titulo, true, g)) {
+            const capa = capaDaFicha(generos, s.titulo, true) || '';
+            if (capa) {
+              jaExibidos.add(chaveD);
+              doGenero.push({
+                tipo: 'd',
+                titulo: s.titulo,
+                letra: '#',
+                ano: s.ano,
+                capa,
+              });
+              if (doGenero.length >= 35) break;
+            }
+          }
+        }
         if (doGenero.length >= 4) {
           out.push({
             titulo: g,
@@ -580,38 +660,47 @@ export function VodCatalog({
 
     if (!listaBase.length) return [];
 
-    const tipoLetra = ehSerie ? 's' : 'f';
-    const prefixoTitulo = secao === null ? 'Filmes de ' : '';
+    const prefixoTitulo = secao === 'netflix'
+      ? 'Netflix: '
+      : secao === '2026'
+      ? '2026: '
+      : secao === null
+      ? 'Filmes de '
+      : (secao === 'series' ? 'Séries de ' : '');
 
-    // Otimização extrema para TV: UMA ÚNICA PASSADA com early break assim que preencher as cotas
+    // Otimização: Distribuição EXCLUSIVA por gênero (título só aparece em 1 gênero e nunca repete destaques)
     const generosValidos = generosAlvo.filter((g) => generos.todos.includes(g));
     const baldes: Record<string, ItemDestaque[]> = {};
     for (const g of generosValidos) baldes[g] = [];
 
-    const COTA = 25;
+    const COTA = secao === '2026' ? 250 : 120;
     let pendentes = generosValidos.length;
 
     for (let i = 0; i < listaBase.length; i++) {
       const item = listaBase[i];
-      let capaCache: string | null | undefined = undefined;
+      const itemEhSerie = item.serie ?? ehSerie;
+      const tipoLetra = itemEhSerie ? 's' : 'f';
+      const chaveNorm = chaveDeDeduplicacao(item.titulo);
+      const chaveGlobal = `${tipoLetra}|${chaveNorm}`;
+      if (jaExibidos.has(chaveGlobal)) continue; // Elimina títulos repetidos entre seções e fileiras
 
       for (const g of generosValidos) {
         if (baldes[g].length >= COTA) continue;
-        if (temGenero(generos, item.titulo, ehSerie, g)) {
-          if (capaCache === undefined) {
-            capaCache = capaDaFicha(generos, item.titulo, ehSerie) || '';
-          }
-          if (capaCache) {
+        if (temGenero(generos, item.titulo, itemEhSerie, g)) {
+          const capa = capaDaFicha(generos, item.titulo, itemEhSerie) || '';
+          if (capa) {
+            jaExibidos.add(chaveGlobal); // Vinculado exclusivamente a este gênero
             baldes[g].push({
               tipo: tipoLetra,
               titulo: item.titulo,
               letra: item.letra,
               ano: item.ano,
-              capa: capaCache,
+              capa,
             });
             if (baldes[g].length === COTA) {
               pendentes--;
             }
+            break; // Sai do loop para não repetir o mesmo filme/série em outro gênero!
           }
         }
       }
@@ -629,7 +718,7 @@ export function VodCatalog({
     }
 
     return out;
-  }, [generos, secao, todasSeries, todosFilmes, animesColecao, doramasColecao]);
+  }, [generos, secao, todasSeries, todosFilmes, animesColecao, doramasColecao, filasDestaque]);
 
   // Itens em andamento ("Continue assistindo")
   const itensAndamento = useMemo(() => {
@@ -682,7 +771,7 @@ export function VodCatalog({
       };
     }
 
-    const nome = secao === 'filmes' ? 'Filmes' : secao === 'series' ? 'Séries' : secao === 'animes' ? 'Animes' : secao === 'doramas' ? 'Doramas' : '18+ Adulto';
+    const nome = secao === 'filmes' ? 'Filmes' : secao === 'series' ? 'Séries' : secao === 'netflix' ? 'Netflix 🔴' : secao === '2026' ? 'Lançamentos de 2026 🚀' : secao === 'animes' ? 'Animes' : secao === 'doramas' ? 'Doramas' : '18+ Adulto';
     const total = contagens[secao] || 0;
     return {
       titulo: nome,
@@ -887,26 +976,32 @@ export function VodCatalog({
 
   const filmesDaSerie = useMemo<Movie[]>(() => {
     if (!aberto?.serie) return [];
-    return episodiosAgrupados.map((e) => ({
-      id: `series-${aberto.chave}-s${e.temporada}e${e.numero}`,
-      name: `${aberto.rotulo} · T${e.temporada}:E${e.numero}`,
-      url: e.fontes[0]?.url ?? '',
-      sources: e.fontes,
-      category: 'Séries',
-      type: 'series' as const,
-      seriesName: aberto.rotulo,
-      seasonNumber: e.temporada,
-      episodeNumber: e.numero,
-      tmdbId: (generos && idDaFicha(generos, aberto.titulo, true)) || (aberto.colecao?.tmdbId ? Number(aberto.colecao.tmdbId) : undefined) || tmdbFallbackId || undefined,
-      origem: {
-        tipo: aberto.chave.startsWith('animes') ? 'a' : aberto.chave.startsWith('doramas') ? 'd' : 's',
-        titulo: aberto.titulo,
-        letra: aberto.letra,
-        ano: aberto.ano ?? '',
-        capa: (generos && capaDaFicha(generos, aberto.titulo, true, aberto.colecao?.tmdbId)) || '',
-      },
-    })).filter((m) => !!m.url);
-  }, [aberto, episodiosAgrupados, generos]);
+    return episodiosAgrupados.map((e) => {
+      // Prioriza Dublado (Português) como padrão, ou Legendado se o usuário escolheu o filtro
+      const ordenadas = (versaoFiltro === 'leg')
+        ? [...e.fontes].sort((a, b) => (a.versao === 'leg' ? -1 : b.versao === 'leg' ? 1 : 0))
+        : e.fontes;
+      return {
+        id: `series-${aberto.chave}-s${e.temporada}e${e.numero}`,
+        name: `${aberto.rotulo} · T${e.temporada}:E${e.numero}`,
+        url: ordenadas[0]?.url ?? e.fontes[0]?.url ?? '',
+        sources: ordenadas,
+        category: 'Séries',
+        type: 'series' as const,
+        seriesName: aberto.rotulo,
+        seasonNumber: e.temporada,
+        episodeNumber: e.numero,
+        tmdbId: (generos && idDaFicha(generos, aberto.titulo, true)) || (aberto.colecao?.tmdbId ? Number(aberto.colecao.tmdbId) : undefined) || tmdbFallbackId || undefined,
+        origem: {
+          tipo: aberto.chave.startsWith('animes') ? 'a' : aberto.chave.startsWith('doramas') ? 'd' : 's',
+          titulo: aberto.titulo,
+          letra: aberto.letra,
+          ano: aberto.ano ?? '',
+          capa: (generos && capaDaFicha(generos, aberto.titulo, true, aberto.colecao?.tmdbId)) || '',
+        },
+      };
+    }).filter((m) => !!m.url);
+  }, [aberto, episodiosAgrupados, generos, tmdbFallbackId, versaoFiltro]);
 
   const tocarEpisodio = useCallback(
     (episodio: EpisodioAgrupado) => {
@@ -1048,6 +1143,37 @@ export function VodCatalog({
         }));
     }
 
+    if (secao === 'netflix') {
+      const todos = [...todasSeries, ...todosFilmes];
+      return todos
+        .filter((a) => {
+          const tLow = a.titulo.toLowerCase();
+          return NETFLIX_KEYWORDS.some((kw) => tLow === kw || tLow.startsWith(kw + ' (') || tLow.startsWith(kw + ':') || tLow.includes(kw));
+        })
+        .map((a) => ({
+          chave: `${a.serie ? 's' : 'f'}:${a.titulo}:${a.ano}`,
+          titulo: a.titulo,
+          rotulo: a.nomeCompleto || a.titulo,
+          serie: a.serie,
+          letra: a.letra,
+          ano: a.ano,
+        }));
+    }
+
+    if (secao === '2026') {
+      const todos = [...todosFilmes, ...todasSeries];
+      return todos
+        .filter((a) => a.ano === '2026' || a.titulo.includes('2026'))
+        .map((a) => ({
+          chave: `${a.serie ? 's' : 'f'}:${a.titulo}:${a.ano}`,
+          titulo: a.titulo,
+          rotulo: a.nomeCompleto || a.titulo,
+          serie: a.serie,
+          letra: a.letra,
+          ano: a.ano,
+        }));
+    }
+
     const base = secao === 'series' ? todasSeries : todosFilmes;
     let filtrados = base;
     // Com ano, idade, nota ou ordem escolhidos, a busca é na seção inteira.
@@ -1067,30 +1193,33 @@ export function VodCatalog({
     }));
   }, [buscaAtiva, buscaAchados, secao, animesColecao, doramasColecao, todasSeries, todosFilmes, letraFiltro, generoFiltro, generos, filtrosExtras]);
 
-  // Ano, idade, nota e ordem sobre o que a seção (e o gênero) deixou.
+  // Ano, idade, nota e ordem sobre o que a seção (e o gênero) deixou, sempre desduplicando.
   const itensFiltrados = useMemo(() => {
-    if (!filtrosExtras) return itensGrade;
+    // 1. Sempre desduplicar títulos idênticos ou com variações de ano e legenda
+    const vistos = new Set<string>();
+    let lista = itensGrade.filter((i) => {
+      const chave = `${i.serie ? 's' : 'f'}|${chaveDeDeduplicacao(i.titulo)}`;
+      if (vistos.has(chave)) return false;
+      vistos.add(chave);
+      return true;
+    });
+
+    if (!filtrosExtras) return lista;
+
     const faixa = faixasDeAno().find((f) => f.rotulo === anosFiltro)?.anos;
     const idadeMax = idadeFiltro === '' ? null : Number(idadeFiltro);
     const notaMin = Number(notaFiltro) || 0;
     const anoDe = (i: { titulo: string; serie: boolean; ano?: string }) =>
       detalheDe(detalhes, i.titulo, i.serie)?.ano || Number(i.ano) || Number((i.titulo.match(/\((\d{4})\)\s*$/) || [])[1]) || 0;
-    let lista = itensGrade.filter((i) => {
+
+    lista = lista.filter((i) => {
       const d = detalheDe(detalhes, i.titulo, i.serie);
       if (faixa) { const a = anoDe(i); if (a < faixa[0] || a > faixa[1]) return false; }
       if (idadeMax !== null && !(d && d.idade >= 0 && d.idade <= idadeMax)) return false;
       if (notaMin && !(d && d.nota >= notaMin)) return false;
       return true;
     });
-    // O mesmo título em duas pastas ("Jack" e "Jack (1993)") aparece uma vez só.
-    const vistos = new Set<string>();
-    lista = lista.filter((i) => {
-      const base = i.titulo.replace(/\s*\(\d{4}\)\s*$/, '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-      const chave = `${i.serie ? 's' : 'f'}|${base}|${anoDe(i)}`;
-      if (vistos.has(chave)) return false;
-      vistos.add(chave);
-      return true;
-    });
+
     if (ordemFiltro === 'novos') lista = [...lista].sort((a, b) => anoDe(b) - anoDe(a));
     else if (ordemFiltro === 'populares') lista = [...lista].sort((a, b) => (detalheDe(detalhes, b.titulo, b.serie)?.popularidade || 0) - (detalheDe(detalhes, a.titulo, a.serie)?.popularidade || 0));
     else if (ordemFiltro === 'melhores') lista = [...lista].sort((a, b) => (detalheDe(detalhes, b.titulo, b.serie)?.nota || 0) - (detalheDe(detalhes, a.titulo, a.serie)?.nota || 0));
@@ -1162,28 +1291,42 @@ export function VodCatalog({
             On Demand
           </button>
           <button
+            className={`vod-sub-pill${secao === 'netflix' ? ' ativa' : ''}`}
+            onClick={() => { setSecao('netflix'); setModo('fileiras'); }}
+            style={{ color: secao === 'netflix' ? '#fff' : '#ff4d4d', fontWeight: 700 }}
+          >
+            Netflix 🔴
+          </button>
+          <button
+            className={`vod-sub-pill${secao === '2026' ? ' ativa' : ''}`}
+            onClick={() => { setSecao('2026'); setModo('fileiras'); }}
+            style={{ color: secao === '2026' ? '#fff' : '#4fe3d0', fontWeight: 700 }}
+          >
+            2026 🚀
+          </button>
+          <button
             className={`vod-sub-pill${secao === 'filmes' ? ' ativa' : ''}`}
             onClick={() => { setSecao('filmes'); setModo('fileiras'); }}
           >
-            Filmes
+            Filmes ({contagens.filmes ? contagens.filmes.toLocaleString('pt-BR') : '28k+'})
           </button>
           <button
             className={`vod-sub-pill${secao === 'series' ? ' ativa' : ''}`}
             onClick={() => { setSecao('series'); setModo('fileiras'); }}
           >
-            Séries
+            Séries ({contagens.series ? contagens.series.toLocaleString('pt-BR') : '9k+'})
           </button>
           <button
             className={`vod-sub-pill${secao === 'animes' ? ' ativa' : ''}`}
             onClick={() => { setSecao('animes'); setModo('fileiras'); }}
           >
-            Animes
+            Animes ({contagens.animes ? contagens.animes.toLocaleString('pt-BR') : '1k+'})
           </button>
           <button
             className={`vod-sub-pill${secao === 'doramas' ? ' ativa' : ''}`}
             onClick={() => { setSecao('doramas'); setModo('fileiras'); }}
           >
-            Doramas
+            Doramas ({contagens.doramas ? contagens.doramas.toLocaleString('pt-BR') : '500+'})
           </button>
           {isAdultUnlocked && (
             <button
@@ -1215,9 +1358,9 @@ export function VodCatalog({
           <button
             className={`vod-sub-btn-modo${modo === 'explorar' ? ' ativo' : ''}`}
             onClick={() => setModo((m) => (m === 'fileiras' ? 'explorar' : 'fileiras'))}
-            title={modo === 'fileiras' ? 'Filtrar por gênero, ano, idade e nota' : 'Ver em fileiras'}
+            title={modo === 'fileiras' ? 'Explorar acervo completo de 38.000 títulos' : 'Ver em fileiras'}
           >
-            {modo === 'fileiras' ? 'Filtrar' : 'Fileiras'}
+            {modo === 'fileiras' ? 'Explorar A–Z (38.000+)' : 'Ver em Fileiras'}
           </button>
         </div>
       </nav>
@@ -1355,7 +1498,17 @@ export function VodCatalog({
           {/* Destaques do catálogo (Filtrados por seção ou todos) */}
           {filasDestaque.map((fila, idx) => {
             const itensDaFila = secao
-              ? fila.itens.filter((i) => (secao === 'filmes' ? i.tipo === 'f' : secao === 'series' ? i.tipo === 's' : secao === 'animes' ? i.tipo === 'a' : i.tipo === 'd'))
+              ? (secao === 'filmes'
+                ? fila.itens.filter((i) => i.tipo === 'f')
+                : secao === 'series'
+                ? fila.itens.filter((i) => i.tipo === 's')
+                : secao === 'netflix'
+                ? fila.itens.filter((i) => fila.titulo.toLowerCase().includes('netflix') || i.titulo.toLowerCase().includes('netflix'))
+                : secao === '2026'
+                ? fila.itens.filter((i) => i.ano === '2026' || i.titulo.includes('2026') || fila.titulo.includes('2026'))
+                : secao === 'animes'
+                ? fila.itens.filter((i) => i.tipo === 'a')
+                : fila.itens.filter((i) => i.tipo === 'd'))
               : fila.itens;
             if (itensDaFila.length < 3) return null;
             const elemento = (
@@ -1844,7 +1997,7 @@ export function VodCatalog({
                                   className={`vod-pilula vod-pilula-versao${versaoFiltro === v ? ' ativa' : ''}`}
                                   onClick={() => setVersaoFiltro(v)}
                                 >
-                                  {v === 'leg' ? 'Legendado' : 'Dublado'}
+                                  {v === 'leg' ? '🇺🇸 Legendado / Original' : '🇧🇷 Dublado (Padrão)'}
                                 </button>
                               ))}
                             </div>

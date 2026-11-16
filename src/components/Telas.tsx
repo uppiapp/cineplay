@@ -140,14 +140,14 @@ export function CampoBusca({ valor, aoMudar, placeholder, autoFocus }: {
   );
 }
 
-const BOAS_VINDAS = 'Para começar, adicione uma lista M3U (só o link já basta), uma lista com usuário e senha ou o endereço de uma lista do Saimo.';
+const BOAS_VINDAS = 'Para começar, adicione uma lista M3U (só o link já basta), uma lista com usuário e senha ou o endereço de uma lista do CinePlay.';
 
 const TEXTOS_SEM_LISTA = {
-  canais: ['Bem-vindo ao Saimo!', BOAS_VINDAS],
-  filmes: ['Nenhum filme ou série', 'Informe o endereço de uma lista de filmes e séries do Saimo em Ajustes > Listas.'],
-  radios: ['Nenhuma rádio', 'As rádios vêm de uma lista de canais do Saimo. Informe o endereço em Ajustes > Listas.'],
+  canais: ['Bem-vindo ao CinePlay!', BOAS_VINDAS],
+  filmes: ['Nenhum filme ou série', 'Informe o endereço de uma lista de filmes e séries em Ajustes > Listas.'],
+  radios: ['Nenhuma rádio', 'As rádios vêm da lista de canais. Informe o endereço em Ajustes > Listas.'],
   eventos: ['Nenhum jogo', 'Os jogos aparecem nos canais da lista. ' + BOAS_VINDAS],
-  guia: ['Sem guia de programação', 'Informe o endereço de uma lista de canais do Saimo em Ajustes > Listas.'],
+  guia: ['Sem guia de programação', 'Informe o endereço da lista de canais em Ajustes > Listas.'],
 } as const;
 
 /**

@@ -24,6 +24,7 @@ import { useLocalStorage } from '../hooks/useLocalStorage';
 import { CHAVE_UPSCALING, type ModoUpscaling } from '../telas/Ajustes';
 import { audioInteligenteService } from '../services/audioInteligente';
 import { IconeMaterial } from './IconeMaterial';
+import { selecionarAudioPortugues, formatarRotuloAudio } from '../utils/audioIdiomas';
 
 interface MoviePlayerProps {
   movie: Movie | null;
@@ -34,10 +35,16 @@ interface MoviePlayerProps {
 
 /** Só séries lembram a fonte entre episódios; escolha explícita do modal vale primeiro. */
 const serieDe = (filme?: Movie | null) => (filme?.type === 'series' ? filme.seriesName : undefined);
-const fonteInicial = (lista: readonly { url: string; versao?: string }[], filme?: Movie | null) =>
-  filme?.initialSourceUrl
-    ? initialSourceIndex(lista, filme.initialSourceUrl)
-    : fontePreferida(serieDe(filme), lista);
+const fonteInicial = (lista: readonly { url: string; versao?: string }[], filme?: Movie | null) => {
+  if (filme?.initialSourceUrl) {
+    return initialSourceIndex(lista, filme.initialSourceUrl);
+  }
+  const pref = fontePreferida(serieDe(filme), lista);
+  if (pref > 0) return pref;
+  // Padrão obrigatório: prioriza fonte Dublado (Português)
+  const idxDub = lista.findIndex((f) => f.versao === 'dub' || !f.versao);
+  return idxDub >= 0 ? idxDub : 0;
+};
 
 /** Pula para um ponto do vídeo; ignora valor não finito (duração ainda desconhecida em TV). */
 function posicionar(video: HTMLVideoElement, segundos: number): void {
@@ -162,6 +169,7 @@ export const MoviePlayer = memo(function MoviePlayer({ movie, onBack, seriesInfo
   const [selectedQuality, setSelectedQuality] = useState(-1);
   const [audioTracks, setAudioTracks] = useState<Array<{ id: number; label: string }>>([]);
   const [selectedAudio, setSelectedAudio] = useState(-1);
+  const [showAudioMenu, setShowAudioMenu] = useState(false);
   const [subtitleTracks, setSubtitleTracks] = useState<Array<{ id: number; label: string }>>([]);
   const [selectedSubtitle, setSelectedSubtitle] = useState(-1);
   // Legendas do OpenSubtitles (services/legendas.ts), à parte das que vêm no
@@ -474,10 +482,26 @@ export const MoviePlayer = memo(function MoviePlayer({ movie, onBack, seriesInfo
           id,
           label: level.height ? `${level.height}p` : `${Math.round(level.bitrate / 1000)} kbps`,
         })));
-        setAudioTracks(hls.audioTracks.map((track, id) => ({
-          id,
-          label: track.name || track.lang || `Áudio ${id + 1}`,
-        })));
+
+        if (hls.audioTracks && hls.audioTracks.length > 0) {
+          setAudioTracks(hls.audioTracks.map((track, id) => ({
+            id,
+            label: formatarRotuloAudio(track, id),
+          })));
+
+          // Padrão obrigatório: Português!
+          const idxPt = selecionarAudioPortugues(hls.audioTracks);
+          if (idxPt >= 0) {
+            hls.audioTrack = idxPt;
+            setSelectedAudio(idxPt);
+          } else {
+            setSelectedAudio(hls.audioTrack >= 0 ? hls.audioTrack : 0);
+          }
+        } else {
+          setAudioTracks([]);
+          setSelectedAudio(-1);
+        }
+
         setSubtitleTracks(hls.subtitleTracks.map((track, id) => ({
           id,
           label: track.name || track.lang || `Legenda ${id + 1}`,
@@ -489,6 +513,19 @@ export const MoviePlayer = memo(function MoviePlayer({ movie, onBack, seriesInfo
       }));
 
       hls.on(Hls.Events.AUDIO_TRACK_SWITCHED, (_event, data) => seguro(() => setSelectedAudio(data.id)));
+      hls.on(Hls.Events.AUDIO_TRACKS_UPDATED, () => seguro(() => {
+        if (hls.audioTracks && hls.audioTracks.length > 0) {
+          setAudioTracks(hls.audioTracks.map((track, id) => ({
+            id,
+            label: formatarRotuloAudio(track, id),
+          })));
+          const idxPt = selecionarAudioPortugues(hls.audioTracks);
+          if (idxPt >= 0 && hls.audioTrack !== idxPt) {
+            hls.audioTrack = idxPt;
+            setSelectedAudio(idxPt);
+          }
+        }
+      }));
       hls.on(Hls.Events.SUBTITLE_TRACK_SWITCH, (_event, data) => seguro(() => setSelectedSubtitle(data.id)));
 
       hls.on(Hls.Events.ERROR, (_event, data) => {
@@ -524,6 +561,25 @@ export const MoviePlayer = memo(function MoviePlayer({ movie, onBack, seriesInfo
       video.src = url;
       onLoadedMetadata = () => seguro(() => {
         setDuration(Number.isFinite(video.duration) ? video.duration : 0);
+        try {
+          const vTracks = (video as any).audioTracks;
+          if (vTracks && vTracks.length > 0) {
+            const arr = [];
+            for (let i = 0; i < vTracks.length; i++) {
+              arr.push({ name: vTracks[i].label, lang: vTracks[i].language });
+            }
+            setAudioTracks(arr.map((t, idx) => ({ id: idx, label: formatarRotuloAudio(t, idx) })));
+            const idxPt = selecionarAudioPortugues(arr);
+            if (idxPt >= 0) {
+              for (let i = 0; i < vTracks.length; i++) {
+                vTracks[i].enabled = (i === idxPt);
+              }
+              setSelectedAudio(idxPt);
+            } else {
+              setSelectedAudio(0);
+            }
+          }
+        } catch { /* ignore */ }
         setIsLoading(false);
         carregarProgresso();
         reproduzir();
@@ -1315,7 +1371,7 @@ export const MoviePlayer = memo(function MoviePlayer({ movie, onBack, seriesInfo
                 <div>
                   <strong>No aplicativo, isso nem aparece.</strong>
                   <span>
-                    No Saimo TV para Windows, Mac, Android e TV Box o vídeo abre direto, em
+                    No CinePlay para Windows, Mac, Android e TV Box o vídeo abre direto, em
                     qualquer fonte, sem essa volta — e os filmes em 4K tocam na maior resolução.
                   </span>
                 </div>
@@ -1396,7 +1452,7 @@ export const MoviePlayer = memo(function MoviePlayer({ movie, onBack, seriesInfo
               {soNosApps && (
                 <div className="aviso-app" style={{ margin: '16px auto', maxWidth: '520px', textAlign: 'left' }}>
                   <div>
-                    <strong>Disponível nos aplicativos do Saimo TV</strong>
+                    <strong>Disponível nos aplicativos do CinePlay</strong>
                     <span>
                       Este título utiliza fontes que os navegadores bloqueiam. Nos aplicativos para TV Box, Celular, Windows e Mac ele abre normalmente.
                     </span>
@@ -2086,6 +2142,83 @@ export const MoviePlayer = memo(function MoviePlayer({ movie, onBack, seriesInfo
                     <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
                   </svg>
                 </button>
+              )}
+
+              {/* Botão Dedicado de Idioma / Áudio (Português / Inglês / Espanhol) */}
+              {audioTracks.length > 0 && (
+                <div className="audio-menu-wrapper" style={{ position: 'relative' }}>
+                  <button 
+                    className="control-btn" 
+                    onClick={() => setShowAudioMenu(!showAudioMenu)}
+                    title={`Áudio: ${audioTracks.find((t) => t.id === selectedAudio)?.label || 'Português'}`}
+                    data-focusable="true"
+                    data-nav-group="player-controls"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      padding: '4px 10px',
+                      fontSize: '0.8rem',
+                      fontWeight: 700,
+                      borderRadius: '8px',
+                      background: 'rgba(255,255,255,0.12)',
+                      border: '1px solid rgba(255,255,255,0.2)',
+                    }}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 16, height: 16 }}>
+                      <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z" />
+                      <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                    </svg>
+                    <span>{audioTracks.find((t) => t.id === selectedAudio)?.label.split(' ')[0] || 'Áudio'}</span>
+                  </button>
+                  {showAudioMenu && (
+                    <div className="settings-dropdown" onClick={(e) => e.stopPropagation()} style={{ minWidth: 230, bottom: '100%', right: 0, marginBottom: 10, background: '#181824', padding: 14, borderRadius: 10, border: '1px solid rgba(255,255,255,0.15)', boxShadow: '0 8px 30px rgba(0,0,0,0.8)' }}>
+                      <div className="settings-section">
+                        <label style={{ color: '#4fe3d0', fontWeight: 700, marginBottom: 8, display: 'block', fontSize: '0.85rem' }}>
+                          Idioma do Áudio:
+                        </label>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                          {audioTracks.map((track) => {
+                            const ativo = selectedAudio === track.id;
+                            return (
+                              <button
+                                key={track.id}
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'space-between',
+                                  padding: '8px 12px',
+                                  background: ativo ? 'rgba(79, 227, 208, 0.2)' : 'rgba(255,255,255,0.06)',
+                                  border: ativo ? '1px solid #4fe3d0' : '1px solid transparent',
+                                  color: ativo ? '#4fe3d0' : '#fff',
+                                  borderRadius: '6px',
+                                  cursor: 'pointer',
+                                  textAlign: 'left',
+                                  fontSize: '0.85rem',
+                                  fontWeight: ativo ? 700 : 500,
+                                }}
+                                onClick={() => {
+                                  setSelectedAudio(track.id);
+                                  if (hlsRef.current) hlsRef.current.audioTrack = track.id;
+                                  try {
+                                    const vTracks = (videoRef.current as any)?.audioTracks;
+                                    if (vTracks && vTracks.length > track.id) {
+                                      for (let i = 0; i < vTracks.length; i++) vTracks[i].enabled = (i === track.id);
+                                    }
+                                  } catch { /* ignore */ }
+                                  setShowAudioMenu(false);
+                                }}
+                              >
+                                <span>{track.label}</span>
+                                {ativo && <span style={{ fontWeight: 800 }}>✓</span>}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               )}
 
               {/* Settings Menu */}

@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useMemo, lazy, Suspense } from 'react';
-import { HashRouter, BrowserRouter, Routes, Route, useNavigate, useLocation, useParams } from 'react-router-dom';
+import { HashRouter, BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation, useParams } from 'react-router-dom';
 import { BarraTopo } from './components/BarraTopo';
 import { AdultModeContext, useAdultMode } from './contexts/adultoContexto';
 import { Inicio } from './telas/Inicio';
@@ -15,8 +15,8 @@ import { useVoltarFecha } from './hooks/useVoltarFecha';
 import { useCanais } from './hooks/useCanais';
 import { useListas } from './services/listas';
 import { useTemMinhasListas } from './hooks/useTemMinhasListas';
-import { RaizDoSite } from './landing/RaizDoSite';
-import { Landing } from './landing/Landing';
+import { PlanosPage } from './telas/PlanosPage';
+import { BoostPage } from './telas/BoostPage';
 import { Privacidade, Termos, Conteudo, Exclusao, Suporte } from './landing/Legal';
 import Formato from './landing/Formato';
 import { SemLista } from './components/Telas';
@@ -638,10 +638,16 @@ function AppLayout() {
   return (
     <>
     <Routes>
-      {/* Página institucional (só para quem ainda não abriu o app no navegador; TVs e PWA vão direto ao app). */}
-      <Route path="/" element={<RaizDoSite app={<Inicio key={chave} />} />} />
+      {/* O site abre diretamente no aplicativo CinePlay */}
+      <Route path="/" element={<Inicio key={chave} />} />
       <Route path="/home" element={<Inicio key={chave} />} />
-      <Route path="/sobre" element={<Landing />} />
+      <Route path="/browser" element={<Inicio key={chave} />} />
+      <Route path="/plan" element={<PlanosPage />} />
+      <Route path="/loja" element={<PlanosPage />} />
+      <Route path="/boost" element={<BoostPage />} />
+      <Route path="/goal" element={<Eventos />} />
+      <Route path="/oal" element={<Navigate to="/goal" replace />} />
+      <Route path="/sobre" element={<Navigate to="/" replace />} />
       <Route path="/privacidade" element={<Privacidade />} />
       <Route path="/termos" element={<Termos />} />
       <Route path="/conteudo" element={<Conteudo />} />

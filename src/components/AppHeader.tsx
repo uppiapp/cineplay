@@ -167,7 +167,7 @@ export const AppHeader = memo(function AppHeader({
                     </defs>
                   </svg>
                 </div>
-                <span className="logo-text">Saimo<span>TV</span></span>
+                <span className="logo-text">Cine<span>Play</span></span>
                 {isAdultUnlocked && <span className="adult-badge">+18</span>}
               </button>
             )}

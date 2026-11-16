@@ -26,10 +26,12 @@ const tr = { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap
 
 const ABAS: Aba[] = [
   { rota: '/busca', rotulo: 'Buscar', icone: <svg viewBox="0 0 24 24" {...tr}><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg> },
-  { rota: '/home', rotulo: 'Início', icone: <svg viewBox="0 0 24 24" {...tr}><path d="M3 11 12 3l9 8" /><path d="M5 10v10h14V10" /></svg> },
+  { rota: '/home', rotulo: 'Início', prefixos: ['/browser'], icone: <svg viewBox="0 0 24 24" {...tr}><path d="M3 11 12 3l9 8" /><path d="M5 10v10h14V10" /></svg> },
   { rota: '/tv', rotulo: 'Ao vivo', prefixos: ['/tv/'], icone: <svg viewBox="0 0 24 24" {...tr}><rect x="2" y="4" width="20" height="14" rx="2" /><path d="M8 21h8M12 18v3" /></svg> },
-  { rota: '/eventos', rotulo: 'Eventos', icone: <svg viewBox="0 0 24 24" {...tr}><circle cx="12" cy="12" r="9" /><path d="m12 7 4 3-1.5 5h-5L8 10z" /></svg> },
+  { rota: '/eventos', rotulo: 'Jogos / Goal', prefixos: ['/goal'], icone: <svg viewBox="0 0 24 24" {...tr}><circle cx="12" cy="12" r="9" /><path d="m12 7 4 3-1.5 5h-5L8 10z" /></svg> },
   { rota: '/movies', rotulo: 'On Demand', icone: <svg viewBox="0 0 24 24" {...tr}><rect x="3" y="3" width="18" height="18" rx="2" /><path d="M7 3v18M17 3v18M3 8h4M3 16h4M17 8h4M17 16h4" /></svg> },
+  { rota: '/boost', rotulo: 'Boost VIP', icone: <svg viewBox="0 0 24 24" {...tr}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg> },
+  { rota: '/plan', rotulo: 'Planos & Loja', prefixos: ['/loja'], icone: <svg viewBox="0 0 24 24" {...tr}><circle cx="12" cy="12" r="10" /><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" /><path d="M12 6v2m0 8v2" /></svg> },
   { rota: '/favoritos', rotulo: 'Favoritos', icone: <svg viewBox="0 0 24 24" {...tr}><path d="M12 21s-8-4.9-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6.1-8 11-8 11z" /></svg> },
   { rota: '/radios', rotulo: 'Rádios', icone: <svg viewBox="0 0 24 24" {...tr}><rect x="3" y="8" width="18" height="12" rx="2" /><circle cx="15" cy="14" r="3" /><path d="M7 12h3M7 16h3M5 8l11-5" /></svg> },
   {
@@ -211,7 +213,7 @@ export const BarraTopo = memo(function BarraTopo({ visible: visibleProp, autoHid
           }, 300);
         }}
       >
-        <button className="barra-logo" onClick={aoClicarLogo} aria-label="Saimo TV — início">
+        <button className="barra-logo" onClick={aoClicarLogo} aria-label="CinePlay — início">
           <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
             <defs>
               <linearGradient id="barraLogoGrad" x1="5" y1="5" x2="27" y2="24" gradientUnits="userSpaceOnUse">
@@ -221,7 +223,7 @@ export const BarraTopo = memo(function BarraTopo({ visible: visibleProp, autoHid
             <path d="M5 8a3 3 0 0 1 3-3h16a3 3 0 0 1 3 3v13a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V8Z" fill="url(#barraLogoGrad)" />
             <path d="M12 12l9 4-9 4V12Z" fill="#fff" />
           </svg>
-          <span>Saimo<b>TV</b></span>
+          <span>Cine<b>Play</b></span>
           {isAdultUnlocked && <em className="adult-badge">+18</em>}
         </button>
 

@@ -19,6 +19,7 @@ import './VideoPlayer.css';
 import './AvisoApp.css';
 import { ehAppDaTv } from '../plataforma/tv';
 import { alternarTelaCheia, elementoEmTelaCheia, EVENTOS_TELA_CHEIA, soltarOrientacao } from '../utils/telaCheia';
+import { selecionarAudioPortugues, formatarRotuloAudio } from '../utils/audioIdiomas';
 
 interface VideoPlayerProps {
   channel: Channel | null;
@@ -558,9 +559,16 @@ export const VideoPlayer = memo(function VideoPlayer({
         if (hls.audioTracks?.length > 1) {
           setAudioTracks(hls.audioTracks.map((track, id) => ({
             id,
-            label: track.name || track.lang || `Faixa ${id + 1}`,
+            label: formatarRotuloAudio(track, id),
           })));
-          setSelectedAudio(hls.audioTrack);
+          // PADRÃO PORTUGUÊS: Auto-seleciona a faixa em português
+          const idxPt = selecionarAudioPortugues(hls.audioTracks);
+          if (idxPt >= 0) {
+            hls.audioTrack = idxPt;
+            setSelectedAudio(idxPt);
+          } else {
+            setSelectedAudio(hls.audioTrack);
+          }
         } else {
           setAudioTracks([]);
         }
@@ -582,9 +590,15 @@ export const VideoPlayer = memo(function VideoPlayer({
         if (hls.audioTracks?.length > 1) {
           setAudioTracks(hls.audioTracks.map((track, id) => ({
             id,
-            label: track.name || track.lang || `Faixa ${id + 1}`,
+            label: formatarRotuloAudio(track, id),
           })));
-          setSelectedAudio(hls.audioTrack);
+          const idxPt = selecionarAudioPortugues(hls.audioTracks);
+          if (idxPt >= 0 && hls.audioTrack !== idxPt) {
+            hls.audioTrack = idxPt;
+            setSelectedAudio(idxPt);
+          } else {
+            setSelectedAudio(hls.audioTrack);
+          }
         }
       });
 
@@ -838,7 +852,7 @@ export const VideoPlayer = memo(function VideoPlayer({
 
   useMediaSession({
     titulo: channel?.name,
-    subtitulo: 'Ao vivo · Saimo TV',
+    subtitulo: 'Ao vivo · CinePlay',
     capa: channel?.logo,
     aoTocar: retomar,
     // Pausar pelos fones ou pela tela de bloqueio também não para o ao vivo.
@@ -1137,7 +1151,7 @@ export const VideoPlayer = memo(function VideoPlayer({
                 <div>
                   <strong>No aplicativo, este canal abre normalmente.</strong>
                   <span>
-                    O Saimo TV para Windows, Mac, Android e TV Box fala direto com o servidor do
+                    O CinePlay para Windows, Mac, Android e TV Box fala direto com o servidor do
                     canal, então não esbarra no bloqueio que existe aqui dentro do navegador.
                   </span>
                 </div>

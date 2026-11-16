@@ -1,0 +1,414 @@
+/* ══════════════════════════════════════════════════════════════
+   LOJA SAIMO & PLANOS DE ASSINATURA — PLANOSPAGE.CSS
+   ══════════════════════════════════════════════════════════════ */
+
+.planos-container {
+  min-height: 100vh;
+  background-color: var(--bg-primary, #0a0a0f);
+  color: #ffffff;
+  padding-bottom: 5rem;
+}
+
+.planos-hero {
+  text-align: center;
+  padding: 4rem 1.5rem 3rem 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.planos-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1.1rem;
+  background: rgba(124, 92, 255, 0.15);
+  border: 1px solid rgba(124, 92, 255, 0.35);
+  border-radius: 999px;
+  color: #c7b6ff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.5rem;
+}
+
+.planos-titulo {
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 0 0 1.25rem 0;
+}
+
+.planos-subtitulo {
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  color: #a0a6bd;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Grade de Planos */
+.planos-grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1140px;
+  margin: 0 auto 5rem auto;
+  padding: 0 1.5rem;
+}
+
+.plano-cartao {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.5rem;
+  padding: 2.25rem 2rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.plano-cartao:hover {
+  transform: translateY(-6px);
+  border-color: rgba(124, 92, 255, 0.4);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+.plano-destaque {
+  background: linear-gradient(180deg, rgba(124, 92, 255, 0.12) 0%, rgba(20, 20, 32, 0.8) 100%);
+  border: 2px solid #7c5cff;
+  box-shadow: 0 0 35px rgba(124, 92, 255, 0.35);
+  transform: scale(1.03);
+}
+
+.plano-destaque:hover {
+  transform: scale(1.05) translateY(-6px);
+}
+
+.plano-selo-topo {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, #7c5cff, #4fe3d0);
+  color: #000;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 0.35rem 1.25rem;
+  border-radius: 999px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.plano-nome {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem 0;
+  color: #ffffff;
+}
+
+.plano-desc {
+  font-size: 0.9rem;
+  color: #9297ab;
+  margin: 0 0 1.5rem 0;
+  min-height: 40px;
+}
+
+.plano-preco-box {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.plano-preco {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.plano-cifrao {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #c7cbd9;
+}
+
+.plano-valor {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.03em;
+}
+
+.plano-periodo {
+  font-size: 0.95rem;
+  color: #8c92a6;
+}
+
+.plano-recursos {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.plano-recursos li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+  color: #d1d5e6;
+}
+
+.plano-recursos li svg {
+  color: #38d996;
+  flex-shrink: 0;
+}
+
+.plano-botao {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 0.85rem;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.plano-btn-principal {
+  background: linear-gradient(135deg, #7c5cff 0%, #4fe3d0 100%);
+  color: #000000;
+  box-shadow: 0 8px 25px rgba(124, 92, 255, 0.4);
+}
+
+.plano-btn-principal:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(124, 92, 255, 0.6);
+}
+
+.plano-btn-secundario {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.plano-btn-secundario:hover {
+  background: rgba(255, 255, 255, 0.14);
+  transform: translateY(-2px);
+}
+
+/* Seção de Hardware / Loja */
+.loja-secao {
+  max-width: 1140px;
+  margin: 0 auto 5rem auto;
+  padding: 0 1.5rem;
+}
+
+.loja-cabecalho {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.loja-titulo {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin: 0 0 0.75rem 0;
+}
+
+.loja-grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+.loja-produto {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.25rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.loja-produto:hover {
+  transform: translateY(-5px);
+  border-color: rgba(124, 92, 255, 0.35);
+}
+
+.produto-imagem-box {
+  background: linear-gradient(135deg, #181928 0%, #0d0e18 100%);
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.produto-imagem-box svg {
+  color: #7c5cff;
+  opacity: 0.9;
+}
+
+.produto-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(56, 217, 150, 0.2);
+  border: 1px solid #38d996;
+  color: #38d996;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+}
+
+.produto-conteudo {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.produto-nome {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+}
+
+.produto-desc {
+  font-size: 0.9rem;
+  color: #9297ab;
+  line-height: 1.5;
+  margin: 0 0 1.25rem 0;
+  flex: 1;
+}
+
+.produto-rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1.25rem;
+}
+
+.produto-preco {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+/* Modal PIX */
+.pix-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  z-index: 1000;
+}
+
+.pix-modal {
+  background: #141520;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 1.5rem;
+  max-width: 480px;
+  width: 100%;
+  padding: 2rem;
+  position: relative;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9);
+  text-align: center;
+}
+
+.pix-fechar {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: none;
+  border: none;
+  color: #8b90a6;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.2rem;
+}
+
+.pix-fechar:hover {
+  color: #ffffff;
+}
+
+.pix-qr-box {
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 1rem;
+  width: 200px;
+  height: 200px;
+  margin: 1.5rem auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pix-qr-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.pix-copia-box {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.pix-chave-texto {
+  flex: 1;
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: #c7cbd9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+.pix-btn-copiar {
+  background: #7c5cff;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.pix-btn-copiar:hover {
+  background: #6a44ff;
+}
+
+.pix-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #38d996;
+  font-size: 0.85rem;
+  font-weight: 600;
+}

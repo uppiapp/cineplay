@@ -37,16 +37,20 @@ export function Cabecalho({ ancoras = false }: { ancoras?: boolean }) {
         <nav className="cab-nav" aria-label="Principal">
           {ancoras ? (
             <>
+              <a href="#vsl" onClick={fechar}>Apresentação</a>
               <a href="#sobre" onClick={fechar}>Sobre</a>
-              <a href="#como" onClick={fechar}>Como funciona</a>
               <a href="#recursos" onClick={fechar}>Recursos</a>
-              <a href="#connect" onClick={fechar}>Saimo Connect</a>
+              <Link to="/plan" onClick={fechar}>Loja & Planos</Link>
+              <Link to="/boost" onClick={fechar}>Saimo Boost</Link>
+              <Link to="/goal" onClick={fechar}>Jogos / Goal</Link>
               <a href="#aparelhos" onClick={fechar}>Aparelhos</a>
             </>
           ) : (
             <>
-              <a href={ancora('sobre')}>Sobre</a>
-              <a href={ancora('connect')}>Saimo Connect</a>
+              <a href={ancora('vsl')}>Apresentação</a>
+              <Link to="/plan">Loja & Planos</Link>
+              <Link to="/boost">Saimo Boost</Link>
+              <Link to="/goal">Jogos / Goal</Link>
               <Link to="/suporte">Suporte</Link>
             </>
           )}

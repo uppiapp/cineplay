@@ -39,3 +39,5 @@ dist-tv/
 catalogo.txt
 canais.txt
 restritos.txt
+.vercel
+.env*

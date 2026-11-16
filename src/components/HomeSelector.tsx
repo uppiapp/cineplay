@@ -80,7 +80,7 @@ export function HomeSelector({ onSelect }: HomeSelectorProps) {
             </svg>
           </div>
           <div className="brand-text">
-            <h1>Saimo<span>TV</span></h1>
+            <h1>Cine<span>Play</span></h1>
             <p>Entretenimento sem limites</p>
           </div>
         </div>
@@ -227,7 +227,7 @@ export function HomeSelector({ onSelect }: HomeSelectorProps) {
 
       {/* Footer */}
       <footer className="home-footer">
-        <p>© {new Date().getFullYear()} Saimo TV</p>
+        <p>© {new Date().getFullYear()} CinePlay</p>
       </footer>
     </div>
   );

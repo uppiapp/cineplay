@@ -52,7 +52,7 @@ async function doMonitor(): Promise<unknown> {
 }
 
 interface Placar {
-    casa: string; fora: string; casaLogo: string; foraLogo: string; ligaLogo: string;
+    casa: string; fora: string; casaLogo: string; foraLogo: string; liga: string; ligaLogo: string;
     inicio: number; estado: string; golsCasa: string; golsFora: string; tempo: string;
 }
 
@@ -76,7 +76,7 @@ interface Competidor {
     team?: { name?: string; logo?: string };
 }
 interface PlacarEspn {
-    leagues?: { logos?: { href?: string }[] }[];
+    leagues?: { name?: string; abbreviation?: string; logos?: { href?: string }[] }[];
     events?: {
         date?: string;
         status?: { type?: { state?: string; shortDetail?: string } };
@@ -164,7 +164,9 @@ function lerAgenda(arr: unknown, canais: Channel[]): Jogo[] {
 
 function lerEspn(bruto: unknown): Placar[] {
     const dados = bruto as PlacarEspn | null;
-    const ligaLogo = dados?.leagues?.[0]?.logos?.[0]?.href ?? '';
+    const ligaObj = dados?.leagues?.[0];
+    const ligaLogo = ligaObj?.logos?.[0]?.href ?? '';
+    const liga = ligaObj?.name || ligaObj?.abbreviation || 'Esportes';
     const saida: Placar[] = [];
     for (const ev of dados?.events ?? []) {
         const comps: Competidor[] = ev?.competitions?.[0]?.competitors ?? [];
@@ -176,12 +178,31 @@ function lerEspn(bruto: unknown): Placar[] {
         saida.push({
             casa: casa.team?.name ?? '', fora: fora.team?.name ?? '',
             casaLogo: casa.team?.logo ?? '', foraLogo: fora.team?.logo ?? '',
-            ligaLogo, inicio: new Date(ev.date ?? '').getTime() || 0, estado,
+            liga, ligaLogo, inicio: new Date(ev.date ?? '').getTime() || 0, estado,
             golsCasa: casa.score ?? '', golsFora: fora.score ?? '',
             tempo: estado === 'in' ? status?.shortDetail ?? '' : '',
         });
     }
     return saida;
+}
+
+function encontrarCanalEsportivo(p: Placar, canais: Channel[]): Channel | undefined {
+    if (!canais || !canais.length) return undefined;
+    const ligaLower = (p.liga || '').toLowerCase();
+    if (ligaLower.includes('bra') || ligaLower.includes('paulist') || ligaLower.includes('copa') || ligaLower.includes('libertadores') || ligaLower.includes('sudamericana')) {
+        const canal = canais.find(c => /premiere|sportv|globo/i.test(c.name));
+        if (canal) return canal;
+    }
+    if (ligaLower.includes('champions') || ligaLower.includes('uefa') || ligaLower.includes('esp') || ligaLower.includes('ita') || ligaLower.includes('eng') || ligaLower.includes('ger') || ligaLower.includes('premier')) {
+        const canal = canais.find(c => /espn|tnt|space|bandsports/i.test(c.name));
+        if (canal) return canal;
+    }
+    if (ligaLower.includes('nba') || ligaLower.includes('nfl') || ligaLower.includes('ufc') || ligaLower.includes('nhl') || ligaLower.includes('baseball')) {
+        const canal = canais.find(c => /espn|bandsports|ufc/i.test(c.name));
+        if (canal) return canal;
+    }
+    const canalEsporte = canais.find(c => (c.category && /esporte/i.test(c.category)) || /espn|sportv|premiere|tnt|bandsports/i.test(c.name));
+    return canalEsporte || canais[0];
 }
 
 /** Só palavras inteiras de sigla saem: "Palmeiras" e "SE Palmeiras" casam. */
@@ -203,9 +224,10 @@ export async function buscarJogos(canais: Channel[]): Promise<Jogo[] | null> {
         doMonitor(),
         ...ESPN.map(l => json(`https://site.api.espn.com/apis/site/v2/sports/${l}/scoreboard`)),
     ]);
-    if (!Array.isArray(streaming)) return null;
     const espn = placares.filter(Boolean).flatMap(lerEspn);
-    return lerAgenda(streaming, canais).map(jogo => {
+    const jogosAgenda = Array.isArray(streaming) ? lerAgenda(streaming, canais) : [];
+
+    const combinados: Jogo[] = jogosAgenda.map(jogo => {
         // O mesmo jogo na ESPN: mesmos times (em qualquer ordem) e começo
         // a menos de quatro horas um do outro.
         const par = espn.find(e =>
@@ -229,4 +251,38 @@ export async function buscarJogos(canais: Channel[]): Promise<Jogo[] | null> {
             tempo: par.tempo,
         };
     });
+
+    // Se a agenda do monitor trouxe poucos ou nenhum jogo, complementa com os eventos ao vivo e agendados da ESPN
+    if (combinados.length < 10 && espn.length > 0 && canais.length > 0) {
+        const agora = Date.now();
+        const jaInseridos = new Set(combinados.map(j => `${chaveTime(j.casa)}x${chaveTime(j.fora)}`));
+
+        for (const p of espn) {
+            // Ignora jogos finalizados há mais de 4 horas
+            if (p.estado === 'post' || (p.inicio && agora - p.inicio > 4 * HORA)) continue;
+            const chave = `${chaveTime(p.casa)}x${chaveTime(p.fora)}`;
+            if (jaInseridos.has(chave)) continue;
+            jaInseridos.add(chave);
+
+            const canal = encontrarCanalEsportivo(p, canais);
+            if (!canal) continue;
+
+            combinados.push({
+                casa: p.casa,
+                fora: p.fora,
+                casaLogo: p.casaLogo,
+                foraLogo: p.foraLogo,
+                liga: p.liga || 'Esportes',
+                ligaLogo: p.ligaLogo,
+                inicio: p.inicio || agora,
+                fim: (p.inicio || agora) + 2 * HORA,
+                canal,
+                estado: p.estado || 'pre',
+                placar: p.estado === 'pre' ? '' : `${p.golsCasa || '0'} x ${p.golsFora || '0'}`,
+                tempo: p.tempo || '',
+            });
+        }
+    }
+
+    return combinados;
 }

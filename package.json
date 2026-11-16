@@ -1,11 +1,11 @@
 {
-  "name": "tv-saimo",
+  "name": "cineplay",
   "private": true,
   "version": "3.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && bash scripts/tv_para_site.sh",
+    "build": "tsc -b && vite build && node scripts/tv_para_site.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },

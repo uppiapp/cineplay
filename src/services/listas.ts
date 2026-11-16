@@ -21,13 +21,22 @@ const CHAVE_FILMES = 'saimo-link-filmes';
 const CHAVE_MIGRADO = 'saimo-sem-listas-v1';
 const EVENTO = 'saimo-listas-mudaram';
 
+export const PADRAO_CANAIS = 'https://canais-saimo.pages.dev/';
+export const PADRAO_FILMES = 'https://filmes-saimo.pages.dev/';
+
 export type Lista = 'canais' | 'filmes';
 
 /** Arquivo que prova que o endereço é de uma lista de verdade. */
 const ARQUIVO_DE_TESTE: Record<Lista, string> = { canais: 'catalogo.txt', filmes: 'indice.txt' };
 
 function ler(chave: string): string {
-  try { return resolverEndereco(localStorage.getItem(chave), ''); } catch { return ''; }
+  try {
+    const salvo = localStorage.getItem(chave);
+    const padrao = chave === CHAVE_CANAIS ? PADRAO_CANAIS : PADRAO_FILMES;
+    return resolverEndereco(salvo, padrao);
+  } catch {
+    return chave === CHAVE_CANAIS ? PADRAO_CANAIS : PADRAO_FILMES;
+  }
 }
 
 // Sem localStorage (aba privada estrita) o endereço vale só até recarregar.

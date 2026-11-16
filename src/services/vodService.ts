@@ -484,40 +484,256 @@ export interface FilaDestaque {
   itens: ItemDestaque[];
 }
 
+export const ITENS_NETFLIX_CURADOS: ItemDestaque[] = [
+  { tipo: 's', titulo: 'Stranger Things', letra: 'S', ano: '2016', capa: 'https://image.tmdb.org/t/p/w342/twfKp60THrcOIep9sjHODOOfO8d.jpg' },
+  { tipo: 's', titulo: 'Wandinha', letra: 'W', ano: '2022', capa: 'https://image.tmdb.org/t/p/w342/7rxiQrZjrer0RB9qNA8rHYFo53R.jpg' },
+  { tipo: 's', titulo: 'Round 6', letra: 'R', ano: '2021', capa: 'https://image.tmdb.org/t/p/w342/6gcHdboppvplmBWxvROc96NJnmm.jpg' },
+  { tipo: 's', titulo: 'Bridgerton', letra: 'B', ano: '2020', capa: 'https://image.tmdb.org/t/p/w342/eSrfwxnmMffTEI8gHTDde0iWuGB.jpg' },
+  { tipo: 's', titulo: 'La Casa de Papel', letra: 'L', ano: '2017', capa: 'https://image.tmdb.org/t/p/w342/UfXcC5GbCCMPW2qZ3SB8D9hpUz.jpg' },
+  { tipo: 's', titulo: 'The Witcher', letra: 'T', ano: '2019', capa: 'https://image.tmdb.org/t/p/w342/uJ1kQWTY1nElMcrrbHtDitbV85K.jpg' },
+  { tipo: 's', titulo: 'Black Mirror', letra: 'B', ano: '2011', capa: 'https://image.tmdb.org/t/p/w342/aCTL24B8ZuiI2osMwoUI5rqBXoF.jpg' },
+  { tipo: 's', titulo: 'Cobra Kai', letra: 'C', ano: '2018', capa: 'https://image.tmdb.org/t/p/w342/6GDW4EsgsXlYrL1ASb5eCHQK4er.jpg' },
+  { tipo: 's', titulo: 'Dark', letra: 'D', ano: '2017', capa: 'https://image.tmdb.org/t/p/w342/mAbuZuS4CqlTI6lvWIxPRHppbVs.jpg' },
+  { tipo: 's', titulo: 'Lupin', letra: 'L', ano: '2021', capa: 'https://image.tmdb.org/t/p/w342/sOUWRai0215iUSMackrZx3Y1j05.jpg' },
+  { tipo: 's', titulo: 'Berlim', letra: 'B', ano: '2023', capa: 'https://image.tmdb.org/t/p/w342/aOv5c4PJmQn3sBdrGVThVIyxQpH.jpg' },
+  { tipo: 's', titulo: 'ONE PIECE: A Série', letra: 'O', ano: '2023', capa: 'https://image.tmdb.org/t/p/w342/aesLt9fsKSA6KCgGxA60VVxjtLk.jpg' },
+  { tipo: 's', titulo: 'Peaky Blinders', letra: 'P', ano: '2013', capa: 'https://image.tmdb.org/t/p/w342/i0uajcHH9yogXMfDHpOXexIukG9.jpg' },
+  { tipo: 's', titulo: 'Sex Education', letra: 'S', ano: '2019', capa: 'https://image.tmdb.org/t/p/w342/2SUS5YMoBmJ8IYZzipTHCzIixRc.jpg' },
+  { tipo: 's', titulo: 'Outer Banks', letra: 'O', ano: '2020', capa: 'https://image.tmdb.org/t/p/w342/ovDgO2LPfwdVRfvScAqo9aMiIW.jpg' },
+  { tipo: 's', titulo: 'Emily em Paris', letra: 'E', ano: '2020', capa: 'https://image.tmdb.org/t/p/w342/2QeSY4fkl3tKRAg3HEiTHxSJg8j.jpg' },
+  { tipo: 's', titulo: 'O Gambito da Rainha', letra: 'O', ano: '2020', capa: 'https://image.tmdb.org/t/p/w342/ubWpLTkwcms5PfZJMFZkNXVYXqJ.jpg' },
+  { tipo: 's', titulo: 'Elite', letra: 'E', ano: '2018', capa: 'https://image.tmdb.org/t/p/w342/sfC3hM33pCenEjnmuITvhaUKSXU.jpg' },
+  { tipo: 's', titulo: 'Ozark', letra: 'O', ano: '2017', capa: 'https://image.tmdb.org/t/p/w342/epUO5w9nRmozR0iWCFwChT3ha6j.jpg' },
+  { tipo: 's', titulo: 'Heartstopper', letra: 'H', ano: '2022', capa: 'https://image.tmdb.org/t/p/w342/7h8ZHFmx73HnEagDI6KbWAw4ea3.jpg' },
+  { tipo: 's', titulo: 'Sweet Tooth', letra: 'S', ano: '2021', capa: 'https://image.tmdb.org/t/p/w342/rgMfhcrVZjuy5b7Pn0KzCRCEnMX.jpg' },
+  { tipo: 's', titulo: 'Sandman', letra: 'S', ano: '2022', capa: 'https://image.tmdb.org/t/p/w342/5k1PlMiep3mg1BwIc7P4RZlu3WI.jpg' },
+  { tipo: 's', titulo: 'Narcos', letra: 'N', ano: '2015', capa: 'https://image.tmdb.org/t/p/w342/zzz1KiXWqr8SvqiAb1NmFtnV7Uu.jpg' },
+  { tipo: 's', titulo: 'Lucifer', letra: 'L', ano: '2016', capa: 'https://image.tmdb.org/t/p/w342/hdKxcoV5CFc3sGOmbGXDXbx1cTZ.jpg' },
+  { tipo: 's', titulo: 'Manifest', letra: 'M', ano: '2018', capa: 'https://image.tmdb.org/t/p/w342/rRKLin0R9gYxpR33W7e4cxx5swI.jpg' },
+  { tipo: 's', titulo: 'The Crown', letra: 'T', ano: '2016', capa: 'https://image.tmdb.org/t/p/w342/ehUMAA3qDR5HNor9DB60g72KNQZ.jpg' },
+  { tipo: 's', titulo: 'Arcane', letra: 'A', ano: '2021', capa: 'https://image.tmdb.org/t/p/w342/m3Tzf6k537PnhOEwaSRNCSxedLS.jpg' },
+  { tipo: 'f', titulo: 'Alerta Vermelho', letra: 'A', ano: '2021', capa: 'https://image.tmdb.org/t/p/w342/pe17f8VDfzbvbHSAKAlcORtBHmW.jpg' },
+  { tipo: 'f', titulo: 'Resgate 2', letra: 'R', ano: '2023', capa: 'https://image.tmdb.org/t/p/w342/AfwqKLQwjgPu8bIL1mqhHTlnQv0.jpg' },
+  { tipo: 'f', titulo: 'A Sociedade da Neve (2023)', letra: 'A', ano: '2023', capa: 'https://image.tmdb.org/t/p/w342/7fQTmvKgVGxifieVryqqlxohkoW.jpg' },
+  { tipo: 'f', titulo: 'O Irlandês', letra: 'O', ano: '2019', capa: 'https://image.tmdb.org/t/p/w342/9H1XgBZFoVnh7nSibGWZcJMOL6C.jpg' },
+  { tipo: 'f', titulo: 'Bird Box', letra: 'B', ano: '2018', capa: 'https://image.tmdb.org/t/p/w342/kTHDVXVTT62gJY9WfZnaXdmtvZE.jpg' },
+  { tipo: 'f', titulo: 'Glass Onion: Um Mistério Knives Out', letra: 'G', ano: '2022', capa: 'https://image.tmdb.org/t/p/w342/zQJcENHbZUpLQ8RKYt9wTzcXCwv.jpg' },
+  { tipo: 'f', titulo: 'Enola Holmes', letra: 'E', ano: '2020', capa: 'https://image.tmdb.org/t/p/w342/riYInlsq2kf1AWoGm80JQW5dLKp.jpg' },
+  { tipo: 'f', titulo: 'Rebel Moon - Parte 1: A Menina do Fogo', letra: 'R', ano: '2023', capa: 'https://image.tmdb.org/t/p/w342/sPmGw8DOpH856QjhCfetSK9yzI5.jpg' },
+  { tipo: 'f', titulo: 'Não Olhe para Cima', letra: 'N', ano: '2021', capa: 'https://image.tmdb.org/t/p/w342/6Sc7Tjt7aPsdghYK32mDMFeZkqJ.jpg' },
+  { tipo: 'f', titulo: 'Agente Oculto', letra: 'A', ano: '2022', capa: 'https://image.tmdb.org/t/p/w342/1f10KUKW7KyNt8bF8NHmwbBQ9fs.jpg' },
+  { tipo: 's', titulo: 'Bebe Rena', letra: 'B', ano: '2024', capa: 'https://image.tmdb.org/t/p/w342/5Qsao5QaFFu3BlFgUhB5asp4dzb.jpg' },
+  { tipo: 's', titulo: 'Dahmer: Um Canibal Americano', letra: 'D', ano: '2022', capa: 'https://image.tmdb.org/t/p/w342/b0yY2BOCprAI1Ug3JASheUrfATY.jpg' },
+  { tipo: 's', titulo: 'Mindhunter', letra: 'M', ano: '2017', capa: 'https://image.tmdb.org/t/p/w342/fbKE87mojpIETWepSbD5Qt741fp.jpg' },
+  { tipo: 's', titulo: 'Treta', letra: 'T', ano: '2023', capa: 'https://image.tmdb.org/t/p/w342/oJJ3sJBpbCzq2t6hKccqDcMJc7v.jpg' },
+];
+
+export const ITENS_SAGAS_HEROIS: ItemDestaque[] = [
+  { tipo: 'f', titulo: 'Vingadores: Ultimato', letra: 'V', ano: '2019', capa: 'https://image.tmdb.org/t/p/w342/q6725aR8Zs4IwGMXzZT8aC8lh41.jpg' },
+  { tipo: 'f', titulo: 'Homem-Aranha: Sem Volta Para Casa', letra: 'H', ano: '2021', capa: 'https://image.tmdb.org/t/p/w342/xaKydnMw6wR1MBAjS5seGPVusbs.jpg' },
+  { tipo: 'f', titulo: 'Batman: O Cavaleiro das Trevas', letra: 'B', ano: '2008', capa: 'https://image.tmdb.org/t/p/w342/4lj1ikfsSmMZNyfdi8R8Tv5tsgb.jpg' },
+  { tipo: 'f', titulo: 'Coringa', letra: 'C', ano: '2019', capa: 'https://image.tmdb.org/t/p/w342/xLxgVxFWvb9hhUyCDDXxRPPnFck.jpg' },
+  { tipo: 'f', titulo: 'Deadpool (2016)', letra: 'D', ano: '2016', capa: 'https://image.tmdb.org/t/p/w342/tekExNqal2kcHp8BKiHX5jjxK9J.jpg' },
+  { tipo: 'f', titulo: 'Homem de Ferro (2008)', letra: 'H', ano: '2008', capa: 'https://image.tmdb.org/t/p/w342/mqN7RxojEiPoh3FTSTwOtwg7KAu.jpg' },
+  { tipo: 'f', titulo: 'Pantera Negra (2018)', letra: 'P', ano: '2018', capa: 'https://image.tmdb.org/t/p/w342/ubXNpxL2ASSzY0f8Hxv08pOsV2L.jpg' },
+  { tipo: 'f', titulo: 'Harry Potter e a Pedra Filosofal', letra: 'H', ano: '2001', capa: 'https://image.tmdb.org/t/p/w342/4rtsbE9aQ1qw4gv7yYwaNYfWFoS.jpg' },
+  { tipo: 'f', titulo: 'O Senhor dos Anéis: A Sociedade do Anel', letra: 'O', ano: '2001', capa: 'https://image.tmdb.org/t/p/w342/tlvsNCwWEIgwAM23aNzTmMIcPEZ.jpg' },
+  { tipo: 'f', titulo: 'John Wick 4: Baba Yaga', letra: 'J', ano: '2023', capa: 'https://image.tmdb.org/t/p/w342/rXTqhpkpj6E0YilQ49PK1SSqLhm.jpg' },
+  { tipo: 'f', titulo: 'Velozes e Furiosos 7 (2015)', letra: 'V', ano: '2015', capa: 'https://image.tmdb.org/t/p/w342/spydMyyD81HjGJVwZvjajkrWW1h.jpg' },
+  { tipo: 'f', titulo: 'Star Wars: O Despertar da Força (2015)', letra: 'S', ano: '2015', capa: 'https://image.tmdb.org/t/p/w342/lqMDbo4rXnakFgc4C6LzPv6pG7F.jpg' },
+  { tipo: 'f', titulo: 'Interestelar', letra: 'I', ano: '2014', capa: 'https://image.tmdb.org/t/p/w342/tR1XVa5bxgdh2bRw2u0DzrgkO2l.jpg' },
+  { tipo: 'f', titulo: 'O Poderoso Chefão', letra: 'O', ano: '1972', capa: 'https://image.tmdb.org/t/p/w342/wOMxE93W6KcZTuCeNUByNTSaLLt.jpg' },
+  { tipo: 'f', titulo: 'Pulp Fiction: Tempo de Violência', letra: 'P', ano: '1994', capa: 'https://image.tmdb.org/t/p/w342/tptjnB2LDbuUWya9Cx5sQtv5hqb.jpg' },
+  { tipo: 'f', titulo: 'Gladiador', letra: 'G', ano: '2000', capa: 'https://image.tmdb.org/t/p/w342/4DUClyGA6OqjXv6yC0Imf6THGfp.jpg' },
+  { tipo: 'f', titulo: 'Matrix', letra: 'M', ano: '1999', capa: 'https://image.tmdb.org/t/p/w342/lDqMDI3xpbB9UQRyeXfei0MXhqb.jpg' },
+  { tipo: 'f', titulo: 'Avatar (2009)', letra: 'A', ano: '2009', capa: 'https://image.tmdb.org/t/p/w342/lRRMQhlOLM9xgvjKKFndOmptqKR.jpg' },
+  { tipo: 'f', titulo: 'Top Gun Ases indomaveis', letra: 'T', ano: '1986', capa: 'https://image.tmdb.org/t/p/w342/dDrMtnVgtDeecIgNchb9F8JcO5w.jpg' },
+  { tipo: 'f', titulo: 'Oppenheimer (2023)', letra: 'O', ano: '2023', capa: 'https://image.tmdb.org/t/p/w342/uqrrZICcZFHqlNuZIR3iM1h0Rst.jpg' },
+  { tipo: 'f', titulo: 'Duna', letra: 'D', ano: '2021', capa: 'https://image.tmdb.org/t/p/w342/uzERcfV2rSHNhW5eViQiO9hNiA7.jpg' },
+];
+
+export const ITENS_SERIES_PREMIADAS: ItemDestaque[] = [
+  { tipo: 's', titulo: 'Breaking Bad', letra: 'B', ano: '2008', capa: 'https://image.tmdb.org/t/p/w342/hGwm9Cj3CdbJIqQWNExQqiYmCd4.jpg' },
+  { tipo: 's', titulo: 'Game of Thrones', letra: 'G', ano: '2011', capa: 'https://image.tmdb.org/t/p/w342/aqomTRKjNZkmNEeOZnEmWrFTmKU.jpg' },
+  { tipo: 's', titulo: 'The Last of Us', letra: 'T', ano: '2023', capa: 'https://image.tmdb.org/t/p/w342/ieMLFFCwdep90d67kOT0oFtv2yX.jpg' },
+  { tipo: 's', titulo: 'Chernobyl', letra: 'C', ano: '2019', capa: 'https://image.tmdb.org/t/p/w342/hlLXt2tOPT6RRnjiUmoxyG1LTFi.jpg' },
+  { tipo: 's', titulo: 'Better Call Saul', letra: 'B', ano: '2015', capa: 'https://image.tmdb.org/t/p/w342/tFCPd8nOqrxjKpTs0ZAdPRydQFR.jpg' },
+  { tipo: 's', titulo: 'The Boys', letra: 'T', ano: '2019', capa: 'https://image.tmdb.org/t/p/w342/in1R2dDc421JxsoRWaIIAqVI2KE.jpg' },
+  { tipo: 's', titulo: 'Rick e Morty', letra: 'R', ano: '2013', capa: 'https://image.tmdb.org/t/p/w342/5qfd0e2uMbVInX3YdeFbDsfxi1t.jpg' },
+  { tipo: 's', titulo: 'Invencível', letra: 'I', ano: '2021', capa: 'https://image.tmdb.org/t/p/w342/4vzSdzQGvP0TIpQHNa4Ip6op0Ts.jpg' },
+  { tipo: 's', titulo: 'A Casa do Dragão', letra: 'A', ano: '2022', capa: 'https://image.tmdb.org/t/p/w342/oKJDm4QCKbp6mR4FnxXrFlPJP8Y.jpg' },
+  { tipo: 's', titulo: 'The Walking Dead', letra: 'T', ano: '2010', capa: 'https://image.tmdb.org/t/p/w342/9lb02gTh4LLB17yAEXFd4C3R4JP.jpg' },
+  { tipo: 's', titulo: 'Vikings', letra: 'V', ano: '2013', capa: 'https://image.tmdb.org/t/p/w342/bQLrHIRNEkE3PdIWQrZHynQZazu.jpg' },
+  { tipo: 's', titulo: 'Succession', letra: 'S', ano: '2018', capa: 'https://image.tmdb.org/t/p/w342/z0XiwdrCQ9yVIr4O0pxzaAYRxdW.jpg' },
+  { tipo: 's', titulo: 'True Detective', letra: 'T', ano: '2014', capa: 'https://image.tmdb.org/t/p/w342/1fxr55V72a2gtqyn2b8pf6FslOf.jpg' },
+  { tipo: 's', titulo: 'Xogum A Gloriosa Saga do Japao', letra: 'X', ano: '2024', capa: 'https://image.tmdb.org/t/p/w342/gaOb9hyCDUcbZiTYcHy7mIFmNo.jpg' },
+  { tipo: 's', titulo: 'Dexter', letra: 'D', ano: '2006', capa: 'https://image.tmdb.org/t/p/w342/f1nV5NBIFwfQLw5g8FVrdt90FAy.jpg' },
+  { tipo: 's', titulo: 'Supernatural', letra: 'S', ano: '2005', capa: 'https://image.tmdb.org/t/p/w342/ygS9SupLrUdERIiSfAYu7EC6dmw.jpg' },
+];
+
+export function chaveDeDeduplicacao(titulo: string): string {
+  return titulo
+    .replace(/\s*\(\d{4}\)\s*$/g, '')
+    .replace(/\s*-\s*leg(endado)?/gi, '')
+    .replace(/\s*-\s*dub(lado)?/gi, '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '')
+    .trim();
+}
+
 let filasEmMemoria: FilaDestaque[] | null = null;
+
+function extrairLetra(titulo: string): string {
+  const norm = titulo.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').trim();
+  const primeira = norm.charAt(0).toUpperCase();
+  return /^[A-Z]$/.test(primeira) ? primeira : '#';
+}
 
 export async function destaques(): Promise<FilaDestaque[]> {
   sincronizar();
   if (filasEmMemoria) return filasEmMemoria;
-  const texto = await arquivo('destaques.txt');
-  if (!texto) return [];
+
+  const [textoDestaques, textoNovidades] = await Promise.all([
+    arquivo('destaques.txt'),
+    arquivo('novidades.json'),
+  ]);
+
+  if (!textoDestaques && !textoNovidades) return [];
 
   const filas: FilaDestaque[] = [];
-  let titulo: string | null = null;
-  let itens: ItemDestaque[] = [];
-  let base = '';
+  const vistosGlobal = new Set<string>();
 
-  const fechar = () => {
-    if (titulo && itens.length) filas.push({ titulo, itens });
-    itens = [];
-  };
-
-  for (const linha of texto.split('\n')) {
-    if (!linha.trim() || linha.startsWith('#')) continue;
-    if (linha.startsWith('capa:')) { base = linha.slice('capa:'.length).trim(); continue; }
-    if (linha.startsWith('fila\t')) { fechar(); titulo = linha.slice('fila\t'.length).trim(); continue; }
-    const campos = linha.split('\t');
-    if (campos.length < 3) continue;
-    const poster = campos[4] ?? '';
-    itens.push({
-      tipo: campos[0]?.charAt(0) || 'f',
-      titulo: campos[1],
-      letra: campos[2],
-      ano: campos[3] ?? '',
-      capa: poster ? base + poster : '',
-    });
+  // 1. Registrar filmes e séries da Netflix, Sagas e Séries Premiadas na desduplicação global
+  for (const n of ITENS_NETFLIX_CURADOS) {
+    vistosGlobal.add(`${n.tipo}|${chaveDeDeduplicacao(n.titulo)}`);
   }
-  fechar();
+  filas.push({ titulo: 'Originais & Sucessos Netflix 🔴', itens: ITENS_NETFLIX_CURADOS });
+
+  for (const s of ITENS_SAGAS_HEROIS) {
+    vistosGlobal.add(`${s.tipo}|${chaveDeDeduplicacao(s.titulo)}`);
+  }
+  filas.push({ titulo: 'Grandes Sagas & Super-Heróis 🍿', itens: ITENS_SAGAS_HEROIS });
+
+  for (const sp of ITENS_SERIES_PREMIADAS) {
+    vistosGlobal.add(`${sp.tipo}|${chaveDeDeduplicacao(sp.titulo)}`);
+  }
+  filas.push({ titulo: 'Séries Aclamadas & HBO/Max 🏆', itens: ITENS_SERIES_PREMIADAS });
+
+  // 2. Processar Novidades Recentes (sem repetir nada da Netflix, Sagas ou entre si)
+  if (textoNovidades) {
+    try {
+      const novidades = JSON.parse(textoNovidades);
+      const capaBase = novidades.capa || 'https://image.tmdb.org/t/p/w342';
+      const recemAdicionados: ItemDestaque[] = [];
+      const filmes2026: ItemDestaque[] = [];
+      const series2026: ItemDestaque[] = [];
+      const seriesNovas: ItemDestaque[] = [];
+
+      for (const r of novidades.rodadas || []) {
+        for (const ad of r.adicionados || []) {
+          if (!ad.t || !ad.capa) continue;
+          const chave = `${ad.tp || 'f'}|${chaveDeDeduplicacao(ad.t)}`;
+          if (vistosGlobal.has(chave)) continue;
+          vistosGlobal.add(chave);
+
+          const item: ItemDestaque = {
+            tipo: ad.tp || 'f',
+            titulo: ad.t,
+            letra: extrairLetra(ad.t),
+            ano: ad.ano || '',
+            capa: ad.capa.startsWith('http') ? ad.capa : `${capaBase}${ad.capa}`,
+          };
+
+          if (ad.ano === '2026' || ad.t.includes('2026')) {
+            if (ad.tp === 's') {
+              if (series2026.length < 100) series2026.push(item);
+            } else {
+              if (filmes2026.length < 300) filmes2026.push(item);
+            }
+          } else if (ad.tp === 's') {
+            if (seriesNovas.length < 250) seriesNovas.push(item);
+          } else {
+            if (recemAdicionados.length < 250) recemAdicionados.push(item);
+          }
+        }
+
+        for (const at of r.atualizados || []) {
+          if (!at.t || !at.capa) continue;
+          const chave = `${at.tp || 's'}|${chaveDeDeduplicacao(at.t)}`;
+          if (vistosGlobal.has(chave)) continue;
+          vistosGlobal.add(chave);
+
+          const item: ItemDestaque = {
+            tipo: at.tp || 's',
+            titulo: at.t,
+            letra: extrairLetra(at.t),
+            ano: at.ano || '',
+            capa: at.capa.startsWith('http') ? at.capa : `${capaBase}${at.capa}`,
+          };
+          if (at.ano === '2026' || at.t.includes('2026')) {
+            if (series2026.length < 100) series2026.push(item);
+          } else {
+            if (seriesNovas.length < 250) seriesNovas.push(item);
+          }
+        }
+      }
+
+      if (filmes2026.length >= 4) {
+        filas.push({ titulo: 'Lançamentos de Cinema 2026 🚀', itens: filmes2026 });
+      }
+      if (series2026.length >= 2) {
+        filas.push({ titulo: 'Novas Séries de 2026 🍿', itens: series2026 });
+      }
+      if (recemAdicionados.length >= 4) {
+        filas.push({ titulo: 'Recém-Adicionados no Acervo', itens: recemAdicionados });
+      }
+      if (seriesNovas.length >= 4) {
+        filas.push({ titulo: 'Séries com Novos Episódios', itens: seriesNovas });
+      }
+    } catch {
+      // Segue para destaques.txt se novidades.json falhar
+    }
+  }
+
+  // 3. Processar Destaques do arquivo destaques.txt (puxando mais itens únicos sem repetir)
+  if (textoDestaques) {
+    let titulo: string | null = null;
+    let itens: ItemDestaque[] = [];
+    let base = '';
+
+    const fechar = () => {
+      if (titulo && itens.length) {
+        filas.push({ titulo, itens });
+      }
+      itens = [];
+    };
+
+    for (const linha of textoDestaques.split('\n')) {
+      if (!linha.trim() || linha.startsWith('#')) continue;
+      if (linha.startsWith('capa:')) { base = linha.slice('capa:'.length).trim(); continue; }
+      if (linha.startsWith('fila\t')) { fechar(); titulo = linha.slice('fila\t'.length).trim(); continue; }
+      const campos = linha.split('\t');
+      if (campos.length < 3) continue;
+      const poster = campos[4] ?? '';
+      const t = campos[1];
+      const tipo = campos[0]?.charAt(0) || 'f';
+      const chave = `${tipo}|${chaveDeDeduplicacao(t)}`;
+      if (vistosGlobal.has(chave)) continue; // Elimina qualquer repetição de filme já exibido
+      vistosGlobal.add(chave);
+
+      itens.push({
+        tipo,
+        titulo: t,
+        letra: campos[2],
+        ano: campos[3] ?? '',
+        capa: poster ? (poster.startsWith('http') ? poster : base + poster) : '',
+      });
+    }
+    fechar();
+  }
+
   filasEmMemoria = filas;
   return filas;
 }
