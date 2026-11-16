@@ -1,16 +1,16 @@
 /**
- * Abertura animada oficial do CinePlay.
+ * Abertura animada oficial do CinePlay em formato Loading Overlay.
  *
- * Apresenta a vinheta cinematográfica do CinePlay em um card elegante e compacto
- * centralizado no desktop (uma vez por sessão), sem cobrir a tela inteira.
- * No celular, a vinheta é desativada para manter a navegação instantânea.
+ * Apresenta a vinheta 3D do CinePlay com fundo translúcido e efeito de desfoque
+ * (estilo loading screen), onde o fundo do site fica visível por trás e a animação
+ * 3D flutua no centro. Exibida toda vez que o site é aberto/carregado.
  */
 import { useEffect, useRef, useState } from 'react';
 import './Abertura.css';
 
 const VIDEO_SRC = `${import.meta.env.BASE_URL}abertura/cineplay-abertura.mp4`;
 const POSTER_SRC = `${import.meta.env.BASE_URL}abertura/poster.jpg`;
-const SAIDA_MS = 350;
+const SAIDA_MS = 320;
 
 function ehDispositivoMovel(): boolean {
   if (typeof window === 'undefined') return false;
@@ -19,19 +19,8 @@ function ehDispositivoMovel(): boolean {
 
 export function Abertura() {
   const [saindo, setSaindo] = useState(false);
-  // No mobile, desativada para não atrapalhar o uso.
-  // No desktop, exibe no máximo 1x por sessão de navegação.
-  const [fim, setFim] = useState(() => {
-    if (ehDispositivoMovel()) return true;
-    try {
-      if (sessionStorage.getItem('cineplay-abertura-vista')) return true;
-      sessionStorage.setItem('cineplay-abertura-vista', '1');
-      return false;
-    } catch {
-      return false;
-    }
-  });
-
+  // Exibida toda vez como tela de carregamento (loading overlay)
+  const [fim, setFim] = useState(false);
   const [mudo, setMudo] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const encerradoRef = useRef(false);
@@ -48,16 +37,25 @@ export function Abertura() {
     const v = videoRef.current;
     if (!v) return;
 
-    // Tenta reproduzir com áudio; se o navegador bloquear autoplay sonoro, inicia mudo
-    v.play().catch(() => {
+    // No celular, inicia mudo para garantir autoplay imediato pelo navegador
+    if (ehDispositivoMovel()) {
       v.muted = true;
       setMudo(true);
-      v.play().catch(() => {
-        encerrar();
-      });
-    });
+    }
 
-    // Timeout de segurança
+    const prom = v.play();
+    if (prom !== undefined) {
+      prom.catch(() => {
+        // Se o navegador bloquear autoplay com som no desktop, roda mudo
+        v.muted = true;
+        setMudo(true);
+        v.play().catch(() => {
+          encerrar();
+        });
+      });
+    }
+
+    // Timeout de segurança após o término da animação (~3.9s)
     const timerSeguranca = window.setTimeout(encerrar, 4800);
 
     const onKey = (e: KeyboardEvent) => {
@@ -88,21 +86,30 @@ export function Abertura() {
       className={`abertura ${saindo ? 'saindo' : ''}`}
       onClick={encerrar}
       role="presentation"
-      aria-label="CinePlay"
+      aria-label="CinePlay Carregando"
     >
-      <video
-        ref={videoRef}
-        className="abertura-video"
-        src={VIDEO_SRC}
-        poster={POSTER_SRC}
-        playsInline
-        webkit-playsinline="true"
-        x5-playsinline="true"
-        autoPlay
-        preload="auto"
-        disablePictureInPicture
-        onEnded={encerrar}
-      />
+      <div className="abertura-conteudo" onClick={(e) => e.stopPropagation()}>
+        <video
+          ref={videoRef}
+          className="abertura-video"
+          src={VIDEO_SRC}
+          poster={POSTER_SRC}
+          playsInline
+          webkit-playsinline="true"
+          x5-playsinline="true"
+          autoPlay
+          preload="auto"
+          disablePictureInPicture
+          onEnded={encerrar}
+        />
+        <div className="abertura-loading-info">
+          <div className="abertura-barra-progresso">
+            <div className="abertura-barra-preenchimento" />
+          </div>
+          <span className="abertura-loading-label">Carregando catálogo...</span>
+        </div>
+      </div>
+
       <div className="abertura-acoes" onClick={(e) => e.stopPropagation()}>
         {mudo && (
           <button
@@ -121,7 +128,7 @@ export function Abertura() {
             e.stopPropagation();
             encerrar();
           }}
-          title="Pular abertura"
+          title="Pular carregamento"
         >
           Pular ›
         </button>
