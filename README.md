@@ -1,11 +1,7 @@
-# Saimo TV — Web
+# CinePlay — Web & Streaming
 
-<p align="center">
-  Saimo TV: <a href="https://github.com/SaimoTV/SaimoTV-Android">TV Box</a> · <a href="https://github.com/SaimoTV/Saimo-Cell-V2">Celular</a> · <a href="https://github.com/SaimoTV/SaimoWin">Windows</a> · <a href="https://github.com/SaimoTV/SaimoPlayer">Mac</a> · <a href="https://github.com/SaimoTV/SaimoCatalogos">Catálogo</a> · <b>Site</b> · <a href="https://github.com/SaimoTV/saimo-downloads">Downloads</a>
-</p>
-
-Canais ao vivo, guia de programação, filmes e séries direto no navegador:
-**<https://saimo-tv.pages.dev>**. Versão atual: **2.5.1**.
+Canais ao vivo, guia de programação, lançamentos de 2026, filmes e séries direto no navegador:
+**<https://cineplay-rust.vercel.app>**. Versão atual: **3.0.1**.
 
 O site não embute lista nenhuma (nem de canais, nem de filmes, nem tabelas do guia)
 nem endereço de lista. Na primeira visita a tela mostra "Bem-vindo ao Saimo!" com
