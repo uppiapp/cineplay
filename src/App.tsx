@@ -48,6 +48,7 @@ const VodCatalog = lazy(() => import('./components/VodCatalog').then(m => ({ def
 const StreamTester = lazy(() => import('./components/StreamTester').then(m => ({ default: m.StreamTester })));
 const AppDownload = lazy(() => import('./components/AppDownload').then(m => ({ default: m.AppDownload })));
 const Novidades = lazy(() => import('./components/Novidades').then(m => ({ default: m.Novidades })));
+const Studio = lazy(() => import('./telas/Studio').then(m => ({ default: m.Studio })));
 
 // Loading fallback
 const LoadingFallback = () => (
@@ -667,6 +668,12 @@ function AppLayout() {
           <AppDownload />
         </Suspense>
       } />
+      <Route path="/studio" element={
+        <Suspense fallback={<LoadingFallback />}>
+          <Studio />
+        </Suspense>
+      } />
+      <Route path="/admin" element={<Navigate to="/studio" replace />} />
       {/* O que cada rodada da atualização trouxe. Sem link em lugar nenhum. */}
       <Route path="/novidades" element={
         <Suspense fallback={<LoadingFallback />}>

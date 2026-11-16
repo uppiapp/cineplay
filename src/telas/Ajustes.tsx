@@ -230,6 +230,14 @@ export function Ajustes() {
         </section>
 
         <section className="ajustes-bloco">
+          <h2>🎬 CinePlay Studio</h2>
+          <p>Gerencie seus próprios filmes, hospede seus vídeos na nuvem e controle 100% do seu catálogo sem intermediários.</p>
+          <div className="ajustes-botoes">
+            <button className="ajustes-botao destaque" onClick={() => navigate('/studio')}>Abrir CinePlay Studio ›</button>
+          </div>
+        </section>
+
+        <section className="ajustes-bloco">
           <h2>Mais</h2>
           <div className="ajustes-botoes">
             <button className="ajustes-botao" onClick={() => navigate('/app')}>Baixar o app (TV Box, Roku, Smart TVs, celular, PC/Mac)</button>
