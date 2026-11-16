@@ -24,13 +24,13 @@ const { PADRAO_CANAIS, PADRAO_FILMES, linkCanais, linkFilmes, buscarJogos } = aw
 
 test('PADRAO_CANAIS e PADRAO_FILMES estão configurados para os novos endpoints', () => {
   assert.equal(PADRAO_CANAIS, 'https://canais-saimo.pages.dev/');
-  assert.equal(PADRAO_FILMES, 'https://filmes-saimo.pages.dev/');
+  assert.equal(PADRAO_FILMES, 'https://cdn.jsdelivr.net/gh/uppiapp/cineplay-catalogo@main/');
 });
 
 test('linkCanais e linkFilmes utilizam os endpoints padrão quando localStorage está vazio ou ausente', () => {
   globalThis.localStorage = { getItem: () => null, setItem: () => {} };
   assert.equal(linkCanais(), 'https://canais-saimo.pages.dev/');
-  assert.equal(linkFilmes(), 'https://filmes-saimo.pages.dev/');
+  assert.equal(linkFilmes(), 'https://cdn.jsdelivr.net/gh/uppiapp/cineplay-catalogo@main/');
 });
 
 test('buscarJogos retorna eventos da ESPN com canais esportivos mapeados quando streaming está vazio', async () => {

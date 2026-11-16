@@ -22,7 +22,7 @@ const CHAVE_MIGRADO = 'saimo-sem-listas-v1';
 const EVENTO = 'saimo-listas-mudaram';
 
 export const PADRAO_CANAIS = 'https://canais-saimo.pages.dev/';
-export const PADRAO_FILMES = 'https://filmes-saimo.pages.dev/';
+export const PADRAO_FILMES = 'https://cdn.jsdelivr.net/gh/uppiapp/cineplay-catalogo@main/';
 
 export type Lista = 'canais' | 'filmes';
 
