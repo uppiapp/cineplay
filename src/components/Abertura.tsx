@@ -1,9 +1,10 @@
 /**
  * Abertura animada oficial do CinePlay.
  *
- * Apresenta a vinheta cinematográfica em 1080p do CinePlay (faixa de filme 3D,
- * botão play luminoso e o logotipo CinePlay) com som e transição suave ao final.
- * Clique, toque ou qualquer tecla pula a vinheta imediatamente.
+ * Apresenta a vinheta cinematográfica em 1080p do CinePlay apenas no desktop
+ * (uma vez por sessão), proporcionando uma experiência de cinema limpa.
+ * No celular, a vinheta é desativada para que a navegação seja instantânea,
+ * rápida e sem faixas pretas de proporção 16:9 em telas verticais.
  */
 import { useEffect, useRef, useState } from 'react';
 import './Abertura.css';
@@ -12,9 +13,26 @@ const VIDEO_SRC = `${import.meta.env.BASE_URL}abertura/cineplay-abertura.mp4`;
 const POSTER_SRC = `${import.meta.env.BASE_URL}abertura/poster.jpg`;
 const SAIDA_MS = 350;
 
+function ehDispositivoMovel(): boolean {
+  if (typeof window === 'undefined') return false;
+  return window.innerWidth <= 768 || (window.matchMedia('(pointer: coarse)').matches && window.innerHeight <= 600);
+}
+
 export function Abertura() {
   const [saindo, setSaindo] = useState(false);
-  const [fim, setFim] = useState(false);
+  // No mobile, desativa completamente para não atrapalhar a experiência.
+  // No desktop, exibe apenas uma vez por visita/sessão.
+  const [fim, setFim] = useState(() => {
+    if (ehDispositivoMovel()) return true;
+    try {
+      if (sessionStorage.getItem('cineplay-abertura-vista')) return true;
+      sessionStorage.setItem('cineplay-abertura-vista', '1');
+      return false;
+    } catch {
+      return false;
+    }
+  });
+
   const [mudo, setMudo] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const encerradoRef = useRef(false);
@@ -27,15 +45,15 @@ export function Abertura() {
   };
 
   useEffect(() => {
+    if (fim) return;
     const v = videoRef.current;
     if (!v) return;
 
-    // Tenta reproduzir com áudio; se a política do navegador bloquear autoplay sonoro, inicia mudo
+    // Tenta reproduzir com som; se o navegador bloquear autoplay sonoro, inicia mudo
     v.play().catch(() => {
       v.muted = true;
       setMudo(true);
       v.play().catch(() => {
-        // Se até autoplay silencioso for impedido, encerra logo para não travar a experiência
         encerrar();
       });
     });
@@ -54,7 +72,7 @@ export function Abertura() {
       clearTimeout(timerSeguranca);
       window.removeEventListener('keydown', onKey);
     };
-  }, []);
+  }, [fim]);
 
   const alternarMudo = (e: React.MouseEvent) => {
     e.stopPropagation();
