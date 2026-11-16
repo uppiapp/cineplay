@@ -54,18 +54,18 @@ export function Studio() {
     try {
       const salvo = localStorage.getItem('cineplay-r2-config');
       return salvo ? JSON.parse(salvo) : {
-        accountId: '',
+        accountId: 'd2c2f36e567f08d9e89917563c63d616',
         accessKeyId: '',
         secretAccessKey: '',
-        bucketName: 'cineplay-videos',
+        bucketName: 'ssa1',
         publicUrl: '',
       };
     } catch {
       return {
-        accountId: '',
+        accountId: 'd2c2f36e567f08d9e89917563c63d616',
         accessKeyId: '',
         secretAccessKey: '',
-        bucketName: 'cineplay-videos',
+        bucketName: 'ssa1',
         publicUrl: '',
       };
     }
