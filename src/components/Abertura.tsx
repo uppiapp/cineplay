@@ -90,43 +90,41 @@ export function Abertura() {
       role="presentation"
       aria-label="CinePlay"
     >
-      <div className="abertura-card" onClick={(e) => e.stopPropagation()}>
-        <video
-          ref={videoRef}
-          className="abertura-video"
-          src={VIDEO_SRC}
-          poster={POSTER_SRC}
-          playsInline
-          webkit-playsinline="true"
-          x5-playsinline="true"
-          autoPlay
-          preload="auto"
-          disablePictureInPicture
-          onEnded={encerrar}
-        />
-        <div className="abertura-acoes">
-          {mudo && (
-            <button
-              type="button"
-              className="abertura-btn"
-              onClick={alternarMudo}
-              title="Ativar som da vinheta"
-            >
-              🔊 Ativar Som
-            </button>
-          )}
+      <video
+        ref={videoRef}
+        className="abertura-video"
+        src={VIDEO_SRC}
+        poster={POSTER_SRC}
+        playsInline
+        webkit-playsinline="true"
+        x5-playsinline="true"
+        autoPlay
+        preload="auto"
+        disablePictureInPicture
+        onEnded={encerrar}
+      />
+      <div className="abertura-acoes" onClick={(e) => e.stopPropagation()}>
+        {mudo && (
           <button
             type="button"
             className="abertura-btn"
-            onClick={(e) => {
-              e.stopPropagation();
-              encerrar();
-            }}
-            title="Pular abertura"
+            onClick={alternarMudo}
+            title="Ativar som da vinheta"
           >
-            Pular ›
+            🔊 Ativar Som
           </button>
-        </div>
+        )}
+        <button
+          type="button"
+          className="abertura-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            encerrar();
+          }}
+          title="Pular abertura"
+        >
+          Pular ›
+        </button>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-/* Vinheta Cinematográfica Oficial CinePlay */
+/* Vinheta Cinematográfica Oficial CinePlay - Tela Cheia Limpa (sem moldura / sem quadro) */
 .abertura {
   position: fixed;
   inset: 0;
@@ -10,16 +10,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(8, 10, 18, 0.78);
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  background: #000;
   opacity: 1;
-  transition: opacity 320ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 350ms cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
   overflow: hidden;
-  padding: 20px;
+  padding: 0;
+  margin: 0;
   box-sizing: border-box;
 }
 
@@ -28,79 +27,54 @@
   pointer-events: none;
 }
 
-/* Card centralizado, compacto e elegante (não cobre a tela inteira) */
-.abertura-card {
-  position: relative;
-  width: min(640px, 90vw);
-  max-height: min(360px, 70vh);
-  aspect-ratio: 16 / 9;
-  border-radius: 20px;
-  overflow: hidden;
-  background: #000;
-  border: 1px solid rgba(79, 243, 224, 0.28);
-  box-shadow: 
-    0 24px 64px rgba(0, 0, 0, 0.85),
-    0 0 45px rgba(79, 243, 224, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  cursor: default;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: aberturaCardEntrada 0.38s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes aberturaCardEntrada {
-  from {
-    opacity: 0;
-    transform: scale(0.93) translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
 .abertura-video {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  max-width: 100vw;
+  max-width: 100dvw;
+  max-height: 100vh;
+  max-height: 100dvh;
+  object-fit: contain;
   background: #000;
+  border: none;
+  outline: none;
+  box-shadow: none;
   pointer-events: none;
 }
 
 .abertura-acoes {
   position: absolute;
-  bottom: 14px;
-  right: 16px;
+  bottom: max(24px, env(safe-area-inset-bottom, 24px));
+  right: max(28px, env(safe-area-inset-right, 28px));
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   z-index: 10;
 }
 
 .abertura-btn {
-  background: rgba(15, 20, 35, 0.85);
+  background: rgba(15, 20, 35, 0.82);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   color: #fff;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
-  padding: 6px 14px;
+  padding: 8px 18px;
   border-radius: 999px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.7);
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
 
 .abertura-btn:hover,
 .abertura-btn:active {
-  background: rgba(79, 227, 208, 0.35);
+  background: rgba(79, 243, 224, 0.3);
   border-color: #4fe3d0;
   color: #4fe3d0;
   transform: scale(1.03);
