@@ -43,3 +43,4 @@ catalogo/
 streams/
 .vercel
 .env*
+!.env.example

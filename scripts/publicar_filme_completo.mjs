@@ -1,5 +1,5 @@
 /**
- * Script All-in-One: Converte, Hospeda no Supabase Storage e Publica no Catálogo CinePlay
+ * Script All-in-One: Converte, Hospeda no Cloudflare R2 / Supabase Storage e Publica no Catálogo CinePlay
  *
  * Uso:
  *   node scripts/publicar_filme_completo.mjs "<caminho_do_video>" "<Título do Filme>" [ano] [áudio]
@@ -10,10 +10,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
+import { obterClienteR2, uploadPastaR2 } from './upload_r2.mjs';
 
-const SUPABASE_URL = 'https://kqfmahrxjuqlvxngeurj.supabase.co';
-const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtxZm1haHJ4anVxbHZ4bmdldXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNDY2MTcsImV4cCI6MjA5MzgyMjYxN30.hQUfMD0TJIG-RE5SAlKaXBiR4HQQrH2JQZyQx4mASvs';
-const BUCKET = 'cineplay-videos';
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kqfmahrxjuqlvxngeurj.supabase.co';
+const ANON_KEY = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtxZm1haHJ4anVxbHZ4bmdldXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNDY2MTcsImV4cCI6MjA5MzgyMjYxN30.hQUfMD0TJIG-RE5SAlKaXBiR4HQQrH2JQZyQx4mASvs';
+const BUCKET = process.env.SUPABASE_BUCKET || 'cineplay-videos';
 
 const args = process.argv.slice(2);
 if (args.length < 2) {
@@ -82,29 +83,39 @@ const hlsCmd = `ffmpeg -y -i "${arquivoVideo}" -c:v copy -c:a aac -b:a 160k -ac 
 execSync(hlsCmd, { stdio: 'pipe' });
 console.log(`   HLS gerado com sucesso!`);
 
-// 3. Upload para o Supabase Storage
-console.log(`☁️  [4/5] Fazendo upload para o Storage Supabase (Bucket: ${BUCKET})...`);
+// 3. Upload para Cloudflare R2 (se configurado) ou Supabase Storage
+let masterUrl = '';
+let posterUrl = '';
 
-async function uploadArquivo(caminhoCompleto, caminhoRemoto, mimeType) {
-  const fileBuffer = fs.readFileSync(caminhoCompleto);
-  const url = `${SUPABASE_URL}/storage/v1/object/${BUCKET}/${caminhoRemoto}`;
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      apikey: ANON_KEY,
-      Authorization: `Bearer ${ANON_KEY}`,
-      'Content-Type': mimeType,
-      'x-upsert': 'true',
-    },
-    body: fileBuffer,
-  });
-  if (!res.ok) {
-    const txt = await res.text();
-    throw new Error(`Falha no upload de ${caminhoRemoto}: ${res.status} ${txt}`);
+const r2Client = obterClienteR2();
+if (r2Client) {
+  console.log(`☁️  [4/5] Fazendo upload para CLOUDFLARE R2 (Bucket: ${r2Client.bucketName})...`);
+  const resR2 = await uploadPastaR2(pastaTemp, slug);
+  masterUrl = resR2.urlMaster;
+  posterUrl = resR2.urlPoster;
+  console.log(`   Upload Cloudflare R2 concluído com sucesso!`);
+} else {
+  console.log(`☁️  [4/5] Cloudflare R2 não configurado no .env. Enviando para Supabase Storage (Bucket: ${BUCKET})...`);
+
+  async function uploadArquivoSupabase(caminhoCompleto, caminhoRemoto, mimeType) {
+    const fileBuffer = fs.readFileSync(caminhoCompleto);
+    const url = `${SUPABASE_URL}/storage/v1/object/${BUCKET}/${caminhoRemoto}`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        apikey: ANON_KEY,
+        Authorization: `Bearer ${ANON_KEY}`,
+        'Content-Type': mimeType,
+        'x-upsert': 'true',
+      },
+      body: fileBuffer,
+    });
+    if (!res.ok) {
+      const txt = await res.text();
+      throw new Error(`Falha no upload de ${caminhoRemoto}: ${res.status} ${txt}`);
+    }
   }
-}
 
-async function uploadTodos() {
   const arquivos = fs.readdirSync(pastaTemp);
   for (const arq of arquivos) {
     const caminhoLocal = path.join(pastaTemp, arq);
@@ -116,15 +127,14 @@ async function uploadTodos() {
     else if (arq.endsWith('.mp4')) mime = 'video/mp4';
 
     process.stdout.write(`   Enviando ${arq}... `);
-    await uploadArquivo(caminhoLocal, caminhoRemoto, mime);
+    await uploadArquivoSupabase(caminhoLocal, caminhoRemoto, mime);
     console.log('✅');
   }
+
+  masterUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${slug}/master.m3u8`;
+  posterUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${slug}/poster.jpg`;
 }
 
-await uploadTodos();
-
-const masterUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${slug}/master.m3u8`;
-const posterUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${slug}/poster.jpg`;
 console.log(`   URL do Streaming: ${masterUrl}`);
 console.log(`   URL do Pôster: ${posterUrl}`);
 
@@ -175,7 +185,6 @@ if (fs.existsSync(arqNovidades)) {
   try {
     const novidades = JSON.parse(fs.readFileSync(arqNovidades, 'utf8'));
     if (novidades.rodadas && novidades.rodadas.length > 0) {
-      // Inserir no topo da primeira rodada
       novidades.rodadas[0].adicionados.unshift({
         t: titulo,
         tp: 'f',

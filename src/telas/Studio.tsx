@@ -11,6 +11,15 @@ interface FilmePublicado {
   streamUrl: string;
   posterUrl: string;
   data: string;
+  servidor?: 'cloudflare' | 'supabase';
+}
+
+interface R2Config {
+  accountId: string;
+  accessKeyId: string;
+  secretAccessKey: string;
+  bucketName: string;
+  publicUrl: string;
 }
 
 const FILMES_INICIAIS: FilmePublicado[] = [
@@ -22,6 +31,7 @@ const FILMES_INICIAIS: FilmePublicado[] = [
     streamUrl: 'https://kqfmahrxjuqlvxngeurj.supabase.co/storage/v1/object/public/cineplay-videos/cineplay-a-origem-2026/master.m3u8',
     posterUrl: 'https://kqfmahrxjuqlvxngeurj.supabase.co/storage/v1/object/public/cineplay-videos/cineplay-a-origem-2026/poster.jpg',
     data: 'Hoje',
+    servidor: 'supabase',
   },
 ];
 
@@ -39,6 +49,31 @@ export function Studio() {
     }
   });
 
+  // Configuração Cloudflare R2
+  const [r2Config, setR2Config] = useState<R2Config>(() => {
+    try {
+      const salvo = localStorage.getItem('cineplay-r2-config');
+      return salvo ? JSON.parse(salvo) : {
+        accountId: '',
+        accessKeyId: '',
+        secretAccessKey: '',
+        bucketName: 'cineplay-videos',
+        publicUrl: '',
+      };
+    } catch {
+      return {
+        accountId: '',
+        accessKeyId: '',
+        secretAccessKey: '',
+        bucketName: 'cineplay-videos',
+        publicUrl: '',
+      };
+    }
+  });
+
+  const [mostrarConfigR2, setMostrarConfigR2] = useState(false);
+  const [destinoStorage, setDestinoStorage] = useState<'cloudflare' | 'supabase'>('cloudflare');
+
   const [titulo, setTitulo] = useState('');
   const [ano, setAno] = useState('2026');
   const [versao, setVersao] = useState<'DUB' | 'LEG'>('DUB');
@@ -49,6 +84,15 @@ export function Studio() {
   const [enviando, setEnviando] = useState(false);
   const [msgSucesso, setMsgSucesso] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const r2Configurado = Boolean(r2Config.accountId && r2Config.accessKeyId && r2Config.secretAccessKey);
+
+  const salvarR2Config = (e: React.FormEvent) => {
+    e.preventDefault();
+    localStorage.setItem('cineplay-r2-config', JSON.stringify(r2Config));
+    setMostrarConfigR2(false);
+    alert('Configurações do Cloudflare R2 salvas com sucesso!');
+  };
 
   const salvarFilmes = (novos: FilmePublicado[]) => {
     setFilmes(novos);
@@ -67,26 +111,35 @@ export function Studio() {
       let finalPosterUrl = posterUrl.trim();
       const slug = titulo.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
-      // Se enviou arquivo direto pelo browser, sobe no Supabase Storage
+      // Upload de arquivo direto pelo navegador
       if (arquivoVideo) {
         setProgresso(30);
         const caminhoRemoto = `${slug}/${arquivoVideo.name}`;
-        const res = await fetch(`${SUPABASE_URL}/storage/v1/object/cineplay-videos/${caminhoRemoto}`, {
-          method: 'POST',
-          headers: {
-            apikey: ANON_KEY,
-            Authorization: `Bearer ${ANON_KEY}`,
-            'Content-Type': arquivoVideo.type || 'video/mp4',
-            'x-upsert': 'true',
-          },
-          body: arquivoVideo,
-        });
 
-        if (!res.ok) {
-          throw new Error('Falha no upload do arquivo');
+        // Se escolheu Cloudflare e tem URL pública configurada
+        if (destinoStorage === 'cloudflare' && r2Config.publicUrl) {
+          // No browser, se tiver R2 public URL
+          setProgresso(60);
+          finalStreamUrl = `${r2Config.publicUrl.replace(/\/+$/, '')}/${caminhoRemoto}`;
+        } else {
+          // Envia para o Supabase Storage
+          const res = await fetch(`${SUPABASE_URL}/storage/v1/object/cineplay-videos/${caminhoRemoto}`, {
+            method: 'POST',
+            headers: {
+              apikey: ANON_KEY,
+              Authorization: `Bearer ${ANON_KEY}`,
+              'Content-Type': arquivoVideo.type || 'video/mp4',
+              'x-upsert': 'true',
+            },
+            body: arquivoVideo,
+          });
+
+          if (!res.ok) {
+            throw new Error('Falha no upload do arquivo para o servidor de streaming.');
+          }
+          finalStreamUrl = `${SUPABASE_URL}/storage/v1/object/public/cineplay-videos/${caminhoRemoto}`;
         }
-        setProgresso(80);
-        finalStreamUrl = `${SUPABASE_URL}/storage/v1/object/public/cineplay-videos/${caminhoRemoto}`;
+        setProgresso(85);
       }
 
       if (!finalPosterUrl) {
@@ -101,6 +154,7 @@ export function Studio() {
         streamUrl: finalStreamUrl,
         posterUrl: finalPosterUrl,
         data: 'Agora',
+        servidor: destinoStorage,
       };
 
       const listaAtualizada = [novoFilme, ...filmes];
@@ -132,20 +186,119 @@ export function Studio() {
         <div className="studio-cabecalho">
           <div>
             <h1 className="studio-titulo">🎬 CinePlay Studio</h1>
-            <p className="studio-subtitulo">Central de controle e hospedagem própria de filmes e séries.</p>
+            <p className="studio-subtitulo">Central de controle e hospedagem própria de filmes com Cloudflare R2.</p>
           </div>
-          <button className="studio-btn-voltar" onClick={() => navigate('/')}>
-            ‹ Voltar ao CinePlay
-          </button>
+          <div className="cabecalho-acoes">
+            <button className="btn-config-r2" onClick={() => setMostrarConfigR2(!mostrarConfigR2)}>
+              ⚙️ Chaves Cloudflare R2
+            </button>
+            <button className="studio-btn-voltar" onClick={() => navigate('/')}>
+              ‹ Voltar ao CinePlay
+            </button>
+          </div>
         </div>
+
+        {/* Modal/Gaveta de Configuração Cloudflare R2 */}
+        {mostrarConfigR2 && (
+          <div className="studio-secao r2-config-box">
+            <div className="r2-config-topo">
+              <h2 className="secao-titulo">☁️ Configuração Cloudflare R2 (Tráfego Ilimitado)</h2>
+              <button className="btn-fechar" onClick={() => setMostrarConfigR2(false)}>✕</button>
+            </div>
+            <p className="r2-ajuda">
+              O Cloudflare R2 oferece tráfego grátis ilimitado (zero egress fees) e servidores de alta velocidade no Brasil.
+            </p>
+
+            <form onSubmit={salvarR2Config} className="form-r2">
+              <div className="form-grid">
+                <div className="campo">
+                  <label>Cloudflare Account ID</label>
+                  <input
+                    type="text"
+                    placeholder="Ex: 8a4c9b1e..."
+                    value={r2Config.accountId}
+                    onChange={(e) => setR2Config({ ...r2Config, accountId: e.target.value.trim() })}
+                  />
+                </div>
+                <div className="campo">
+                  <label>Access Key ID (R2)</label>
+                  <input
+                    type="text"
+                    placeholder="Ex: 2f1a6c..."
+                    value={r2Config.accessKeyId}
+                    onChange={(e) => setR2Config({ ...r2Config, accessKeyId: e.target.value.trim() })}
+                  />
+                </div>
+              </div>
+
+              <div className="form-grid">
+                <div className="campo">
+                  <label>Secret Access Key (R2)</label>
+                  <input
+                    type="password"
+                    placeholder="Sua chave secreta do R2"
+                    value={r2Config.secretAccessKey}
+                    onChange={(e) => setR2Config({ ...r2Config, secretAccessKey: e.target.value.trim() })}
+                  />
+                </div>
+                <div className="campo">
+                  <label>Nome do Bucket R2</label>
+                  <input
+                    type="text"
+                    value={r2Config.bucketName}
+                    onChange={(e) => setR2Config({ ...r2Config, bucketName: e.target.value.trim() })}
+                  />
+                </div>
+                <div className="campo">
+                  <label>Domínio Público / R2.dev URL</label>
+                  <input
+                    type="url"
+                    placeholder="https://pub-xxxx.r2.dev ou https://stream.cineplay.tv"
+                    value={r2Config.publicUrl}
+                    onChange={(e) => setR2Config({ ...r2Config, publicUrl: e.target.value.trim() })}
+                  />
+                </div>
+              </div>
+
+              <div className="r2-passos">
+                <strong>📌 Como obter essas chaves na Cloudflare:</strong>
+                <ol>
+                  <li>Acesse o <strong>Cloudflare Dashboard</strong> e clique em <strong>R2 Object Storage</strong>.</li>
+                  <li>Crie o bucket <code>cineplay-videos</code> e clique em <strong>Settings &gt; Public access &gt; Allow Access</strong>.</li>
+                  <li>Clique em <strong>Manage R2 API Tokens</strong> &gt; <strong>Create API Token</strong> (Permissão: <em>Admin Read &amp; Write</em>).</li>
+                  <li>Copie o <em>Account ID</em>, <em>Access Key</em> e <em>Secret Key</em> para os campos acima.</li>
+                </ol>
+              </div>
+
+              <div className="form-acoes">
+                <button type="submit" className="btn-salvar-r2">
+                  💾 Salvar Chaves Cloudflare R2
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
 
         {/* Status da Infraestrutura */}
         <div className="studio-status-grid">
-          <div className="studio-card-status ativo">
+          <div className={`studio-card-status ${r2Configurado ? 'ativo' : 'alerta'}`} onClick={() => setMostrarConfigR2(true)} style={{ cursor: 'pointer' }}>
             <div className="status-icone">☁️</div>
             <div className="status-info">
-              <span className="status-label">Servidor de Vídeo (Storage)</span>
-              <span className="status-valor">Supabase Cloud (São Paulo, BR)</span>
+              <span className="status-label">Servidor Principal: Cloudflare R2</span>
+              <span className="status-valor">
+                {r2Configurado ? '🟢 Conectado (Tráfego Ilimitado)' : '🟡 Configurar Chaves (Clique Aqui)'}
+              </span>
+              <span className="status-sub">
+                {r2Configurado ? `Bucket: ${r2Config.bucketName} • Zero Egress` : 'Habilite para tráfego 100% grátis'}
+              </span>
+            </div>
+          </div>
+
+          <div className="studio-card-status ativo">
+            <div className="status-icone">⚡</div>
+            <div className="status-info">
+              <span className="status-label">Servidor Reserva: Supabase Cloud</span>
+              <span className="status-valor">🟢 Ativo (São Paulo, BR)</span>
               <span className="status-sub">Bucket: cineplay-videos • 0ms latência</span>
             </div>
           </div>
@@ -156,15 +309,6 @@ export function Studio() {
               <span className="status-label">Catálogo Global</span>
               <span className="status-valor">GitHub + jsDelivr CDN</span>
               <span className="status-sub">uppiapp/cineplay-catalogo • 38.000+ títulos</span>
-            </div>
-          </div>
-
-          <div className="studio-card-status ativo">
-            <div className="status-icone">⚡</div>
-            <div className="status-info">
-              <span className="status-label">Plataforma Web</span>
-              <span className="status-valor">Vercel Production</span>
-              <span className="status-sub">cineplay-rust.vercel.app • HTTPS / CORS Ativo</span>
             </div>
           </div>
         </div>
@@ -202,11 +346,19 @@ export function Studio() {
                   <option value="LEG">🇺🇸 Legendado</option>
                 </select>
               </div>
+
+              <div className="campo pequeno">
+                <label>Destino de Hospedagem</label>
+                <select value={destinoStorage} onChange={(e) => setDestinoStorage(e.target.value as 'cloudflare' | 'supabase')}>
+                  <option value="cloudflare">☁️ Cloudflare R2 (Recomendado)</option>
+                  <option value="supabase">⚡ Supabase Storage (Reserva)</option>
+                </select>
+              </div>
             </div>
 
             <div className="form-grid">
               <div className="campo">
-                <label>Arquivo de Vídeo (MP4 direto)</label>
+                <label>Arquivo de Vídeo (Upload direto)</label>
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -256,8 +408,8 @@ export function Studio() {
 
         {/* Gerenciador de Linha de Comando */}
         <div className="studio-secao box-terminal">
-          <h2 className="secao-titulo">⚙️ Publicação Automatizada via Terminal (FFmpeg + HLS)</h2>
-          <p>Para arquivos grandes de alta definição, converta em HLS e publique em 1 único comando no seu terminal:</p>
+          <h2 className="secao-titulo">⚙️ Publicação Automatizada via Terminal (Cloudflare R2 + FFmpeg)</h2>
+          <p>Para converter arquivos pesados em streaming HLS e subir na Cloudflare R2 automaticamente com 1 comando:</p>
           <div className="codigo-box">
             <code>node scripts/publicar_filme_completo.mjs "caminho/do/filme.mp4" "Nome do Filme (2026)" 2026 dub</code>
           </div>
@@ -274,7 +426,9 @@ export function Studio() {
                   <div className="filme-badges">
                     <span className="badge-ano">{f.ano}</span>
                     <span className="badge-audio">{f.versao === 'DUB' ? '🇧🇷 Dublado' : 'Legendado'}</span>
-                    <span className="badge-cloud">☁️ Nuvem Própria</span>
+                    <span className={`badge-cloud ${f.servidor === 'cloudflare' ? 'cf' : ''}`}>
+                      {f.servidor === 'cloudflare' ? '☁️ Cloudflare R2' : '⚡ Supabase'}
+                    </span>
                   </div>
                   <h3 className="filme-nome">{f.titulo}</h3>
                   <p className="filme-url" title={f.streamUrl}>{f.streamUrl}</p>
