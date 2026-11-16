@@ -361,14 +361,8 @@ export const MoviePlayer = memo(function MoviePlayer({ movie, onBack, seriesInfo
         setFonteIdx(proximaValida);
         return;
       }
-      setIsLoading(false);
-      setIsProxyBlocked(true);
-      setError('Este vídeo só existe em http.');
-      return () => {
-        if (atual()) loadGenerationRef.current += 1;
-        abortador.abort();
-        salvarProgresso();
-      };
+      // Se só houver HTTP, não bloqueia o usuário: o proxy seguro do site (getProxiedUrl)
+      // vai buscar o fluxo no servidor e entregar em HTTPS seguro sem erro de mixed content.
     }
 
     const url = getProxiedUrl(urlAtiva);
