@@ -1,6 +1,6 @@
 {
-  "name": "Saimo TV",
-  "short_name": "Saimo TV",
+  "name": "CinePlay",
+  "short_name": "CinePlay",
   "description": "Canais ao vivo, filmes e séries.",
   "start_url": "/home",
   "scope": "/",

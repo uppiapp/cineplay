@@ -1111,7 +1111,7 @@ export const MoviePlayer = memo(function MoviePlayer({ movie, onBack, seriesInfo
 
   useMediaSession({
     titulo: movie?.name,
-    subtitulo: seriesInfo?.seriesName ?? 'Saimo TV',
+    subtitulo: seriesInfo?.seriesName ?? 'CinePlay',
     capa: movie?.origem?.capa || undefined,
     aoTocar: () => { void videoRef.current?.play(); },
     aoPausar: () => videoRef.current?.pause(),

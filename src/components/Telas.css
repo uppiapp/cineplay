@@ -140,8 +140,8 @@
 .pilulas button.on { background: linear-gradient(135deg, rgba(79, 243, 224, 0.3), rgba(163, 92, 240, 0.35)); color: #fff; border-color: rgba(255, 255, 255, 0.25); }
 
 @media (max-width: 768px) {
-  .heroi { margin-top: 0; height: 260px; }
-  .tela-com-barra { padding-top: 0; }
+  .heroi { margin-top: 0; height: 280px; }
+  .tela-com-barra { padding-top: calc(58px + env(safe-area-inset-top, 0px)); }
 }
 
 /* ---------- Grade (Favoritos) ---------- */

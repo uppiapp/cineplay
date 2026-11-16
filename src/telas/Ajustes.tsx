@@ -82,7 +82,7 @@ export function Ajustes() {
   };
 
   const handleExportarTodos = () => {
-    exportarM3U(canais, 'saimo-tv-todos-canais.m3u');
+    exportarM3U(canais, 'cineplay-todos-canais.m3u');
     notificar('Lista de canais exportada!');
   };
 
@@ -92,7 +92,7 @@ export function Ajustes() {
       notificar('Você não tem canais favoritos para exportar');
       return;
     }
-    exportarM3U(favs, 'saimo-tv-favoritos.m3u');
+    exportarM3U(favs, 'cineplay-favoritos.m3u');
     notificar('Canais favoritos exportados!');
   };
 
@@ -192,7 +192,7 @@ export function Ajustes() {
 
         <section className="ajustes-bloco">
           <h2>Exportar canais e importar catálogo (.txt)</h2>
-          <p>Exporte seus canais favoritos em .m3u, ou importe um catálogo .txt no formato do Saimo. Para uma lista .m3u use "Minhas listas".</p>
+          <p>Exporte seus canais favoritos em .m3u, ou importe um catálogo .txt no formato CinePlay. Para uma lista .m3u use "Minhas listas".</p>
           <div className="ajustes-botoes">
             <button className="ajustes-botao" onClick={handleExportarTodos}>Exportar todos os canais (M3U)</button>
             <button className="ajustes-botao" onClick={handleExportarFavoritos}>Exportar favoritos (M3U)</button>

@@ -79,8 +79,11 @@ export function Abertura() {
         src={VIDEO_SRC}
         poster={POSTER_SRC}
         playsInline
+        webkit-playsinline="true"
+        x5-playsinline="true"
         autoPlay
         preload="auto"
+        disablePictureInPicture
         onEnded={encerrar}
       />
       <div className="abertura-acoes">

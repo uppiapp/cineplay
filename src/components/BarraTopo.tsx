@@ -276,6 +276,20 @@ export const BarraTopo = memo(function BarraTopo({ visible: visibleProp, autoHid
             </svg>
           </a>
           <button
+            className="barra-busca-mobile"
+            onClick={(e) => {
+              (e.currentTarget as HTMLElement)?.blur();
+              navigate('/busca');
+            }}
+            title="Buscar (Alt+1)"
+            aria-label="Buscar"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" />
+            </svg>
+          </button>
+          <button
             className={`barra-engrenagem ${pathname === '/ajustes' ? 'on' : ''}`}
             onClick={(e) => {
               (e.currentTarget as HTMLElement)?.blur();

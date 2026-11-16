@@ -311,7 +311,7 @@ export function DoacaoModal() {
           onPointerCancel={aoPointerCancel}
           onClick={aoClick}
           title="Arraste para onde quiser ou clique para apoiar"
-          aria-label="Apoiar o projeto Saimo TV (arrastável)"
+          aria-label="Apoiar o projeto CinePlay (arrastável)"
         >
           {/* Alça visual de arraste */}
           <span className="saimo-doacao-grip" aria-hidden="true" title="Arraste">
@@ -331,7 +331,7 @@ export function DoacaoModal() {
               <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
             </svg>
           </span>
-          <span className="saimo-doacao-trigger-texto">Apoie o Saimo TV</span>
+          <span className="saimo-doacao-trigger-texto">Apoie o CinePlay</span>
           <span className="saimo-doacao-trigger-badge">Sem ads</span>
         </button>
       )}
@@ -358,7 +358,7 @@ export function DoacaoModal() {
             <div className="saimo-doacao-cabecalho">
               <div className="saimo-doacao-tag">
                 <span className="saimo-doacao-tag-ponto" />
-                <span>Comunidade Saimo TV</span>
+                <span>Comunidade CinePlay</span>
               </div>
               <h2 id="doacao-titulo" className="saimo-doacao-titulo">
                 Ajude a manter tudo <span className="saimo-doacao-destaque">100% gratuito</span>
