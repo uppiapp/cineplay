@@ -1,10 +1,9 @@
 /**
  * Abertura animada oficial do CinePlay.
  *
- * Apresenta a vinheta cinematográfica em 1080p do CinePlay apenas no desktop
- * (uma vez por sessão), proporcionando uma experiência de cinema limpa.
- * No celular, a vinheta é desativada para que a navegação seja instantânea,
- * rápida e sem faixas pretas de proporção 16:9 em telas verticais.
+ * Apresenta a vinheta cinematográfica do CinePlay em um card elegante e compacto
+ * centralizado no desktop (uma vez por sessão), sem cobrir a tela inteira.
+ * No celular, a vinheta é desativada para manter a navegação instantânea.
  */
 import { useEffect, useRef, useState } from 'react';
 import './Abertura.css';
@@ -20,8 +19,8 @@ function ehDispositivoMovel(): boolean {
 
 export function Abertura() {
   const [saindo, setSaindo] = useState(false);
-  // No mobile, desativa completamente para não atrapalhar a experiência.
-  // No desktop, exibe apenas uma vez por visita/sessão.
+  // No mobile, desativada para não atrapalhar o uso.
+  // No desktop, exibe no máximo 1x por sessão de navegação.
   const [fim, setFim] = useState(() => {
     if (ehDispositivoMovel()) return true;
     try {
@@ -49,7 +48,7 @@ export function Abertura() {
     const v = videoRef.current;
     if (!v) return;
 
-    // Tenta reproduzir com som; se o navegador bloquear autoplay sonoro, inicia mudo
+    // Tenta reproduzir com áudio; se o navegador bloquear autoplay sonoro, inicia mudo
     v.play().catch(() => {
       v.muted = true;
       setMudo(true);
@@ -58,7 +57,7 @@ export function Abertura() {
       });
     });
 
-    // Timeout de segurança caso o evento ended demore
+    // Timeout de segurança
     const timerSeguranca = window.setTimeout(encerrar, 4800);
 
     const onKey = (e: KeyboardEvent) => {
@@ -91,41 +90,43 @@ export function Abertura() {
       role="presentation"
       aria-label="CinePlay"
     >
-      <video
-        ref={videoRef}
-        className="abertura-video"
-        src={VIDEO_SRC}
-        poster={POSTER_SRC}
-        playsInline
-        webkit-playsinline="true"
-        x5-playsinline="true"
-        autoPlay
-        preload="auto"
-        disablePictureInPicture
-        onEnded={encerrar}
-      />
-      <div className="abertura-acoes">
-        {mudo && (
+      <div className="abertura-card" onClick={(e) => e.stopPropagation()}>
+        <video
+          ref={videoRef}
+          className="abertura-video"
+          src={VIDEO_SRC}
+          poster={POSTER_SRC}
+          playsInline
+          webkit-playsinline="true"
+          x5-playsinline="true"
+          autoPlay
+          preload="auto"
+          disablePictureInPicture
+          onEnded={encerrar}
+        />
+        <div className="abertura-acoes">
+          {mudo && (
+            <button
+              type="button"
+              className="abertura-btn"
+              onClick={alternarMudo}
+              title="Ativar som da vinheta"
+            >
+              🔊 Ativar Som
+            </button>
+          )}
           <button
             type="button"
             className="abertura-btn"
-            onClick={alternarMudo}
-            title="Ativar som da vinheta"
+            onClick={(e) => {
+              e.stopPropagation();
+              encerrar();
+            }}
+            title="Pular abertura"
           >
-            🔊 Ativar Som
+            Pular ›
           </button>
-        )}
-        <button
-          type="button"
-          className="abertura-btn"
-          onClick={(e) => {
-            e.stopPropagation();
-            encerrar();
-          }}
-          title="Pular abertura"
-        >
-          Pular ›
-        </button>
+        </div>
       </div>
     </div>
   );
