@@ -294,19 +294,15 @@ export function AppDownload() {
   const deteccao = useMemo(() => detectar(), []);
   const [aba, setAba] = useState<AppId>(deteccao.recomendado ?? 'tvbox');
   const [lancamento, setLancamento] = useState<Versao | null>(null);
-  const [estado, setEstado] = useState<'carregando' | 'pronto' | 'erro'>('carregando');
-  const [tentativa, setTentativa] = useState(0);
 
   useEffect(() => {
     let vivo = true;
-    setEstado('carregando');
     buscarVersao().then(v => {
       if (!vivo) return;
       setLancamento(v);
-      setEstado(v ? 'pronto' : 'erro');
     });
     return () => { vivo = false; };
-  }, [tentativa]);
+  }, []);
 
   const app = APPS.find(a => a.id === aba)!;
   const linkCurto = `${window.location.host}${app.atalho}`;
@@ -375,11 +371,11 @@ export function AppDownload() {
               <p>O CinePlay para iPhone e iPad está a caminho da App Store. Quando sair, o botão de download aparece aqui.</p>
               <p className="download-embreve-dica">Enquanto isso, o CinePlay funciona direto no navegador: no Safari, toque em Compartilhar › Adicionar à Tela de Início.</p>
             </div>
-          ) : arquivo ? (
+          ) : (
             <a
               className="download-button"
-              href={arquivo.url}
-              rel="noopener"
+              href={`/api/download?app=${app.id}`}
+              download={app.arquivo}
               data-focusable="true"
               data-focus-key="download-button"
             >
@@ -390,17 +386,6 @@ export function AppDownload() {
               </svg>
               <span>{app.botao}</span>
             </a>
-          ) : (
-            <button
-              type="button"
-              className="download-button"
-              disabled={estado === 'carregando'}
-              onClick={() => setTentativa(t => t + 1)}
-              data-focusable="true"
-              data-focus-key="download-button"
-            >
-              <span>{estado === 'carregando' ? 'Carregando…' : 'Não consegui buscar o download. Tentar novamente'}</span>
-            </button>
           )}
           {!app.emBreve && detalhes && <p className="download-meta">{detalhes}</p>}
 
